@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, ShoppingBag, Menu, X, LayoutGrid, List } from "lucide-react";
+import { MessageCircle, ShoppingBag, Menu, X, LayoutGrid, List, Grid3X3 } from "lucide-react";
 import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -58,7 +58,7 @@ function Index() {
       }
 
       const savedColumns = Number(localStorage.getItem("prisma-view-cols") || "1");
-      if (!Number.isNaN(savedColumns) && savedColumns >= 1 && savedColumns <= 2) {
+      if (!Number.isNaN(savedColumns) && savedColumns >= 1 && savedColumns <= 3) {
         setViewCols(savedColumns);
       }
     } catch {
@@ -87,7 +87,7 @@ function Index() {
     return true;
   }
 
-  const gridClass = `grid gap-6 ${viewCols === 1 ? "grid-cols-1" : "grid-cols-2"} sm:grid-cols-2 lg:grid-cols-3`;
+  const gridClass = `grid gap-4 sm:gap-6 ${viewCols === 1 ? "grid-cols-1" : viewCols === 2 ? "grid-cols-2" : "grid-cols-3"} sm:grid-cols-2 lg:grid-cols-3`;
 
   return (
     <div className="min-h-screen pb-24">
@@ -104,8 +104,8 @@ function Index() {
             <Button variant="ghost" className="h-11 w-11 p-0 sm:hidden" aria-label="Abrir menu" onClick={() => setMobileMenuOpen((s) => !s)}>
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
-            <Button variant="ghost" className="h-11 w-11 p-0 sm:hidden" aria-label="Alternar colunas" onClick={() => setViewCols((v) => (v === 1 ? 2 : 1))}>
-              {viewCols === 1 ? <LayoutGrid className="h-5 w-5" /> : <List className="h-5 w-5" />}
+            <Button variant="ghost" className="h-11 w-11 p-0 sm:hidden" aria-label="Alternar colunas" onClick={() => setViewCols((v) => (v >= 3 ? 1 : v + 1))}>
+              {viewCols === 1 ? <LayoutGrid className="h-5 w-5" /> : viewCols === 2 ? <Grid3X3 className="h-5 w-5" /> : <List className="h-5 w-5" />}
             </Button>
             <Button asChild variant="ghost" className="h-11 w-11 p-0 sm:w-auto sm:px-3" aria-label="Fale conosco pelo WhatsApp">
               <a href={phone ? `https://wa.me/${phone}` : "#catalogo"} target={phone ? "_blank" : undefined} rel="noopener noreferrer">
@@ -126,6 +126,7 @@ function Index() {
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={() => setViewCols(1)} aria-pressed={viewCols === 1}>1 coluna</Button>
                 <Button variant="outline" size="sm" onClick={() => setViewCols(2)} aria-pressed={viewCols === 2}>2 col.</Button>
+                <Button variant="outline" size="sm" onClick={() => setViewCols(3)} aria-pressed={viewCols === 3}>3 col.</Button>
               </div>
             </div>
             <div className="-mx-4 mb-2 flex gap-2 overflow-x-auto px-4 pb-2">
@@ -158,6 +159,15 @@ function Index() {
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-xl font-bold">Catálogo</h2>
           <span className="text-sm text-muted-foreground">{list.length} produtos</span>
+        </div>
+
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <span className="text-sm text-muted-foreground">Visualização</span>
+          <div className="flex items-center gap-1 rounded-lg border bg-card p-1" role="group" aria-label="Quantidade de colunas no catálogo">
+            <Button type="button" variant={viewCols === 1 ? "default" : "ghost"} size="sm" className="h-10 px-3" aria-pressed={viewCols === 1} onClick={() => setViewCols(1)}><List className="mr-1 h-4 w-4" />1</Button>
+            <Button type="button" variant={viewCols === 2 ? "default" : "ghost"} size="sm" className="h-10 px-3" aria-pressed={viewCols === 2} onClick={() => setViewCols(2)}><LayoutGrid className="mr-1 h-4 w-4" />2</Button>
+            <Button type="button" variant={viewCols === 3 ? "default" : "ghost"} size="sm" className="h-10 px-3" aria-pressed={viewCols === 3} onClick={() => setViewCols(3)}><Grid3X3 className="mr-1 h-4 w-4" />3</Button>
+          </div>
         </div>
 
         <div className="-mx-4 mb-5 hidden gap-2 overflow-x-auto px-4 pb-2 sm:flex">
