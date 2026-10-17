@@ -96,7 +96,7 @@ function Index() {
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <Button asChild className="h-10 gap-2 rounded-xl px-3 text-xs font-bold sm:h-11 sm:px-5 sm:text-sm">
               <a href={phone ? "https://wa.me/" + phone : "#contato"} target={phone ? "_blank" : undefined} rel="noopener noreferrer">
-                <MessageCircle className="h-4 w-4" /> <span className="hidden xs:inline">Solicitar orçamento</span><span className="xs:hidden">Orçamento</span>
+                <MessageCircle className="h-4 w-4" /> <span className="hidden sm:inline">Solicitar orçamento</span><span className="sm:hidden">Orçamento</span>
               </a>
             </Button>
             <Button variant="ghost" className="relative h-11 w-11 p-0 text-ink" aria-label={"Abrir carrinho, " + count + " itens"} onClick={() => setCartOpen(true)}>
