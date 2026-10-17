@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, ShoppingBag } from "lucide-react";
+import { MessageCircle, ShoppingBag, Menu, X, LayoutGrid, List } from "lucide-react";
 import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,12 @@ function Index() {
   const items = resolveCart(cart, products);
   const { total, count, hasQuote } = orderTotals(items);
 
+  // Mobile menu + grid view state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [viewCols, setViewCols] = useState<number>(() => {
+    try { return Number(localStorage.getItem("prisma-view-cols") || "1"); } catch { return 1; }
+  });
+
   useEffect(() => {
     try {
       const stored = localStorage.getItem("prisma-cart-v1");
@@ -61,12 +67,18 @@ function Index() {
     try { localStorage.setItem("prisma-cart-v1", JSON.stringify(cart)); } catch { /* No customer details are persisted. */ }
   }, [cart, cartReady]);
 
+  useEffect(() => {
+    try { localStorage.setItem("prisma-view-cols", String(viewCols)); } catch { /* ignore */ }
+  }, [viewCols]);
+
   function addItem(product: Product, selected: Record<string, number>, notes: string) {
     if (cart.length >= 100) { setCartError("Carrinho cheio. Revise seus itens antes de adicionar mais."); return false; }
     setCartError("");
     setCart((previous) => [...previous, { id: crypto.randomUUID(), productId: product.id, selected: { ...selected }, notes: notes.trim(), quantity: 1 }]);
     return true;
   }
+
+  const gridClass = `grid gap-6 ${viewCols === 1 ? 'grid-cols-1' : 'grid-cols-2'} sm:grid-cols-2 lg:grid-cols-3`;
 
   return (
     <div className="min-h-screen pb-24">
@@ -80,16 +92,52 @@ function Index() {
              <span className="min-w-0 break-words font-display text-base font-bold sm:text-lg">{settings.store_name}</span>
           </div>
           <div className="flex shrink-0 items-center gap-1">
-          <Button asChild variant="ghost" className="h-11 w-11 p-0 sm:w-auto sm:px-3" aria-label="Fale conosco pelo WhatsApp"><a
-            href={phone ? `https://wa.me/${phone}` : "#catalogo"}
-            target={phone ? "_blank" : undefined}
-            rel="noopener noreferrer"
-          >
-            <MessageCircle className="h-4 w-4" /> <span className="hidden sm:inline">Fale conosco</span>
-          </a></Button>
-          <Button variant="outline" className="h-11 gap-1.5 px-3" aria-label={`Abrir carrinho, ${count} itens`} onClick={() => setCartOpen(true)}><ShoppingBag /><span>{count}</span></Button>
+            {/* Mobile menu button */}
+            <Button variant="ghost" className="h-11 w-11 p-0 sm:hidden" aria-label="Abrir menu" onClick={() => setMobileMenuOpen((s) => !s)}>
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            {/* View toggle for mobile (hidden on sm+) */}
+            <Button variant="ghost" className="h-11 w-11 p-0 sm:hidden" aria-label="Alternar colunas" onClick={() => setViewCols((v) => (v === 1 ? 2 : 1))}>
+              {viewCols === 1 ? <LayoutGrid className="h-5 w-5" /> : <List className="h-5 w-5" />}
+            </Button>
+            <Button asChild variant="ghost" className="h-11 w-11 p-0 sm:w-auto sm:px-3" aria-label="Fale conosco pelo WhatsApp"><a
+              href={phone ? `https://wa.me/${phone}` : "#catalogo"}
+              target={phone ? "_blank" : undefined}
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="h-4 w-4" /> <span className="hidden sm:inline">Fale conosco</span>
+            </a></Button>
+            <Button variant="outline" className="h-11 gap-1.5 px-3" aria-label={`Abrir carrinho, ${count} itens`} onClick={() => setCartOpen(true)}><ShoppingBag /><span>{count}</span></Button>
           </div>
         </div>
+
+        {/* Mobile menu drawer */}
+        {mobileMenuOpen && (
+          <div className="sm:hidden border-t bg-background/95 px-4 py-3">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <strong className="font-display">Navegação</strong>
+                <span className="text-sm text-muted-foreground">· {list.length} produtos</span>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => setViewCols(1)} aria-pressed={viewCols === 1}>1 coluna</Button>
+                <Button variant="outline" size="sm" onClick={() => setViewCols(2)} aria-pressed={viewCols === 2}>2 col.</Button>
+              </div>
+            </div>
+            <div className="-mx-4 mb-2 flex gap-2 overflow-x-auto px-4 pb-2">
+              {categories.map((c) => (
+                <Button
+                  key={c}
+                  onClick={() => { setCat(c); setMobileMenuOpen(false); }}
+                  variant={cat === c ? "default" : "outline"}
+                  className={`h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${cat === c ? "border-ink bg-ink text-ink-foreground" : "bg-card hover:border-foreground/40"}`}
+                >
+                  {c}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       <section className="bg-ink text-ink-foreground">
@@ -104,7 +152,8 @@ function Index() {
 
       <main id="catalogo" className="mx-auto max-w-6xl px-4 py-6">
         <div className="mb-4 flex items-baseline justify-between"><h2 className="text-xl font-bold">Catálogo</h2><span className="text-sm text-muted-foreground">{list.length} produtos</span></div>
-        <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-2">
+        {/* Keep the horizontal categories for wider screens */}
+        <div className="-mx-4 mb-5 hidden gap-2 overflow-x-auto px-4 pb-2 sm:flex">
           {categories.map((c) => (
             <Button
               key={c}
@@ -119,7 +168,8 @@ function Index() {
             </Button>
           ))}
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        <div className={gridClass}>
           {list.map((p) => (
             <ProductCard key={p.id} product={p} onAdd={addItem} />
           ))}
@@ -138,11 +188,11 @@ function Index() {
       </footer>
       <div className="fixed inset-x-0 bottom-0 z-30 border-t bg-card pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-card">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4">
-          <div className="min-w-0"><p className="text-xs text-muted-foreground">{count} {count === 1 ? "item" : "itens"}{hasQuote ? " · + sob consulta" : ""}</p><p className="font-display text-lg font-bold">{count ? brl(total) : "Seu carrinho"}</p></div>
+          <div className="min-w-0"><p className="text-xs text-muted-foreground">{count} {count === 1 ? "item" : "itens"}{hasQuote ? " · + sob consulta" : ""}</p><p className="font-display text-l[...]
           <Button className="h-12 px-5 text-base font-bold" onClick={() => setCartOpen(true)}><ShoppingBag /> {count ? "Ver pedido" : "Ver carrinho"}</Button>
         </div>
       </div>
-      <OrderCart open={cartOpen} onOpenChange={setCartOpen} items={items} settings={settings} onRemove={(id) => setCart((previous) => previous.filter((item) => item.id !== id))} onChange={(id, update) => setCart((previous) => previous.map((item) => item.id === id ? { ...item, ...update } : item))} />
+      <OrderCart open={cartOpen} onOpenChange={setCartOpen} items={items} settings={settings} onRemove={(id) => setCart((previous) => previous.filter((item) => item.id !== id))} onChange={(id, up) => setCart((previous) => previous.map((it) => it.id === id ? { ...it, quantity: up } : it))} onClear={() => setCart([])} />
     </div>
   );
 }
