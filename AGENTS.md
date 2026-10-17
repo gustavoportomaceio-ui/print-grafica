@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep cart calculation, validation and WhatsApp message assembly in a shared browser-safe order module so the UI and tests follow the same rules.
+- Persist only product selections in browser storage after hydration; keep checkout personal data in component state to avoid storing customer details.
+- WhatsApp checkout is client-only and does not create an account, store customer data, or process payments; no server receives checkout inputs.
