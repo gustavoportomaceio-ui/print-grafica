@@ -1,17 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { MessageCircle, Zap, BadgeCheck, Truck } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { MessageCircle, ShoppingBag } from "lucide-react";
 import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import { OrderCart } from "@/components/OrderCart";
+import { brl, type Product } from "@/lib/catalog";
+import { cartSchema, orderTotals, resolveCart, type CartItem } from "@/lib/order";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Catálogo de Serviços Gráficos — Peça pelo WhatsApp" },
-      { name: "description", content: "Cartões de visita, panfletos, banners, adesivos e lonas. Escolha as opções e peça pelo WhatsApp em um clique." },
+      { title: "Serviços Gráficos — Carrinho e Pedidos pelo WhatsApp" },
+      { name: "description", content: "Escolha cartões, panfletos, banners, adesivos e lonas. Agrupe seus produtos no carrinho e envie os dados de entrega e pagamento pelo WhatsApp." },
       { property: "og:title", content: "Catálogo de Serviços Gráficos" },
-      { property: "og:description", content: "Escolha seu material gráfico e peça pelo WhatsApp em um clique." },
+      { property: "og:description", content: "Personalize seus materiais gráficos, reúna seus itens no carrinho e conclua o pedido pelo WhatsApp." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -35,9 +39,37 @@ function Index() {
   const [cat, setCat] = useState("Todos");
   const list = cat === "Todos" ? visible : visible.filter((p) => p.category === cat);
   const phone = settings.whatsapp.replace(/\D/g, "");
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartReady, setCartReady] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartError, setCartError] = useState("");
+  const items = resolveCart(cart, products);
+  const { total, count, hasQuote } = orderTotals(items);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("prisma-cart-v1");
+      if (stored) {
+        const parsed = cartSchema.safeParse(JSON.parse(stored));
+        if (parsed.success) setCart(parsed.data);
+      }
+    } catch { /* Storage may be unavailable; the cart still works in memory. */ }
+    setCartReady(true);
+  }, []);
+  useEffect(() => {
+    if (!cartReady) return;
+    try { localStorage.setItem("prisma-cart-v1", JSON.stringify(cart)); } catch { /* No customer details are persisted. */ }
+  }, [cart, cartReady]);
+
+  function addItem(product: Product, selected: Record<string, number>, notes: string) {
+    if (cart.length >= 100) { setCartError("Carrinho cheio. Revise seus itens antes de adicionar mais."); return false; }
+    setCartError("");
+    setCart((previous) => [...previous, { id: crypto.randomUUID(), productId: product.id, selected: { ...selected }, notes: notes.trim(), quantity: 1 }]);
+    return true;
+  }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-24">
       <div className="cmyk-bar h-1.5" />
       <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -45,59 +77,58 @@ function Index() {
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-ink font-display text-lg font-extrabold text-ink-foreground">
               {settings.store_name.charAt(0)}
             </div>
-            <span className="font-display text-lg font-bold">{settings.store_name}</span>
+             <span className="min-w-0 break-words font-display text-base font-bold sm:text-lg">{settings.store_name}</span>
           </div>
-          <a
+          <div className="flex shrink-0 items-center gap-1">
+          <Button asChild variant="ghost" className="h-11 w-11 p-0 sm:w-auto sm:px-3" aria-label="Fale conosco pelo WhatsApp"><a
             href={phone ? `https://wa.me/${phone}` : "#catalogo"}
             target={phone ? "_blank" : undefined}
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-whatsapp px-4 py-2 text-sm font-bold text-whatsapp-foreground"
           >
             <MessageCircle className="h-4 w-4" /> <span className="hidden sm:inline">Fale conosco</span>
-          </a>
+          </a></Button>
+          <Button variant="outline" className="h-11 gap-1.5 px-3" aria-label={`Abrir carrinho, ${count} itens`} onClick={() => setCartOpen(true)}><ShoppingBag /><span>{count}</span></Button>
+          </div>
         </div>
       </header>
 
       <section className="bg-ink text-ink-foreground">
-        <div className="mx-auto max-w-6xl px-4 py-14 md:py-20">
-          <p className="mb-3 inline-block rounded-full border border-ink-foreground/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
-            Gráfica rápida
-          </p>
-          <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.05] md:text-6xl">
-            Sua marca impressa com <span className="text-primary">qualidade</span>.
+        <div className="mx-auto max-w-6xl px-4 py-7 md:py-10">
+          <p className="mb-2 text-xs font-semibold uppercase text-primary">Serviços gráficos</p>
+          <h1 className="max-w-3xl break-words text-3xl font-extrabold leading-tight md:text-5xl">
+            {settings.store_name}
           </h1>
-          <p className="mt-4 max-w-xl text-lg text-ink-foreground/70">{settings.tagline}</p>
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-foreground/80">
-            <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-yellow" /> Orçamento na hora</span>
-            <span className="flex items-center gap-2"><BadgeCheck className="h-4 w-4 text-cyan" /> Sem cadastro</span>
-            <span className="flex items-center gap-2"><Truck className="h-4 w-4 text-magenta" /> Entrega rápida</span>
-          </div>
+          <p className="mt-2 max-w-xl text-base text-ink-foreground/70">{settings.tagline}</p>
         </div>
       </section>
 
-      <main id="catalogo" className="mx-auto max-w-6xl px-4 py-10">
-        <div className="-mx-4 mb-8 flex gap-2 overflow-x-auto px-4 pb-1">
+      <main id="catalogo" className="mx-auto max-w-6xl px-4 py-6">
+        <div className="mb-4 flex items-baseline justify-between"><h2 className="text-xl font-bold">Catálogo</h2><span className="text-sm text-muted-foreground">{list.length} produtos</span></div>
+        <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-2">
           {categories.map((c) => (
-            <button
+            <Button
               key={c}
               onClick={() => setCat(c)}
-              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+              variant="outline"
+              aria-pressed={cat === c}
+              className={`h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${
                 cat === c ? "border-ink bg-ink text-ink-foreground" : "bg-card hover:border-foreground/40"
               }`}
             >
               {c}
-            </button>
+            </Button>
           ))}
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((p) => (
-            <ProductCard key={p.id} product={p} settings={settings} />
+            <ProductCard key={p.id} product={p} onAdd={addItem} />
           ))}
         </div>
         {list.length === 0 && (
           <p className="py-20 text-center text-muted-foreground">Nenhum produto nesta categoria.</p>
         )}
       </main>
+      {cartError && <p role="alert" className="px-4 text-center text-sm text-destructive">{cartError}</p>}
 
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-muted-foreground sm:flex-row">
@@ -105,6 +136,13 @@ function Index() {
           <Link to="/admin" className="hover:text-foreground">Área do administrador</Link>
         </div>
       </footer>
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t bg-card pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-card">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4">
+          <div className="min-w-0"><p className="text-xs text-muted-foreground">{count} {count === 1 ? "item" : "itens"}{hasQuote ? " · + sob consulta" : ""}</p><p className="font-display text-lg font-bold">{count ? brl(total) : "Seu carrinho"}</p></div>
+          <Button className="h-12 px-5 text-base font-bold" onClick={() => setCartOpen(true)}><ShoppingBag /> {count ? "Ver pedido" : "Ver carrinho"}</Button>
+        </div>
+      </div>
+      <OrderCart open={cartOpen} onOpenChange={setCartOpen} items={items} settings={settings} onRemove={(id) => setCart((previous) => previous.filter((item) => item.id !== id))} onChange={(id, update) => setCart((previous) => previous.map((item) => item.id === id ? { ...item, ...update } : item))} />
     </div>
   );
 }
