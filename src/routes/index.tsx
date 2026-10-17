@@ -84,7 +84,7 @@ function Index() {
       <header className="site-header sticky top-0 z-20 border-b border-black/5 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
           <Link to="/" aria-label="Print Center - início" className="flex shrink-0 items-center">
-            <img src="/images/print-center-logo.svg" alt="Print Center" className="site-logo h-12 w-auto max-w-[174px] object-contain sm:h-14" />
+            <img src="/images/a481ab0a-1126-4cba-8580-d3f037956c93.jpeg" alt="Print Center" className="site-logo h-12 w-auto max-w-[174px] object-contain sm:h-14" />
           </Link>
           <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-700 lg:flex" aria-label="Navegação principal">
             <a className="nav-link nav-link-active" href="#inicio">Início</a>
