@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, ShoppingBag, Menu, X, LayoutGrid, List } from "lucide-react";
+import { MessageCircle, ShoppingBag, Menu, X, Search } from "lucide-react";
 import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,9 @@ import { cartSchema, orderTotals, resolveCart, type CartItem } from "@/lib/order
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Serviços Gráficos — Carrinho e Pedidos pelo WhatsApp" },
-      { name: "description", content: "Escolha cartões, panfletos, banners, adesivos e lonas. Agrupe seus produtos no carrinho e envie os dados de entrega e pagamento pelo WhatsApp." },
-      { property: "og:title", content: "Catálogo de Serviços Gráficos" },
+      { title: "Print Center | Gráfica e Comunicação Visual" },
+      { name: "description", content: "Print Center: cartões, panfletos, banners, adesivos e materiais gráficos personalizados. Monte seu pedido e finalize pelo WhatsApp." },
+      { property: "og:title", content: "Print Center | Gráfica e Comunicação Visual" },
       { property: "og:description", content: "Personalize seus materiais gráficos, reúna seus itens no carrinho e conclua o pedido pelo WhatsApp." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -37,7 +37,9 @@ function Index() {
     [visible],
   );
   const [cat, setCat] = useState("Todos");
-  const list = cat === "Todos" ? visible : visible.filter((p) => p.category === cat);
+  const [search, setSearch] = useState("");
+  const filtered = cat === "Todos" ? visible : visible.filter((p) => p.category === cat);
+  const list = filtered.filter((p) => `${p.name} ${p.description} ${p.category}`.toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR")));
   const phone = settings.whatsapp.replace(/\D/g, "");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartReady, setCartReady] = useState(false);
@@ -47,7 +49,6 @@ function Index() {
   const { total, count, hasQuote } = orderTotals(items);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [viewCols, setViewCols] = useState<number>(1);
 
   useEffect(() => {
     try {
@@ -57,10 +58,6 @@ function Index() {
         if (parsed.success) setCart(parsed.data);
       }
 
-      const savedColumns = Number(localStorage.getItem("prisma-view-cols") || "1");
-      if (!Number.isNaN(savedColumns) && savedColumns >= 1 && savedColumns <= 2) {
-        setViewCols(savedColumns);
-      }
     } catch {
       // Storage may be unavailable; the cart still works in memory.
     }
@@ -74,12 +71,6 @@ function Index() {
     }
   }, [cart, cartReady]);
 
-  useEffect(() => {
-    try { localStorage.setItem("prisma-view-cols", String(viewCols)); } catch {
-      // ignore storage failures
-    }
-  }, [viewCols]);
-
   function addItem(product: Product, selected: Record<string, number>, notes: string) {
     if (cart.length >= 100) { setCartError("Carrinho cheio. Revise seus itens antes de adicionar mais."); return false; }
     setCartError("");
@@ -87,7 +78,7 @@ function Index() {
     return true;
   }
 
-  const gridClass = `grid gap-6 ${viewCols === 1 ? "grid-cols-1" : "grid-cols-2"} sm:grid-cols-2 lg:grid-cols-3`;
+  const gridClass = "grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3";
 
   return (
     <div className="min-h-screen pb-24">
@@ -95,17 +86,11 @@ function Index() {
       <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-ink font-display text-lg font-extrabold text-ink-foreground">
-              {settings.store_name.charAt(0)}
-            </div>
-            <span className="min-w-0 break-words font-display text-base font-bold sm:text-lg">{settings.store_name}</span>
+            <img src="/images/print-center-logo.svg" alt="Print Center" className="h-11 w-auto max-w-[180px] object-contain" />
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <Button variant="ghost" className="h-11 w-11 p-0 sm:hidden" aria-label="Abrir menu" onClick={() => setMobileMenuOpen((s) => !s)}>
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-            <Button variant="ghost" className="h-11 w-11 p-0 sm:hidden" aria-label="Alternar colunas" onClick={() => setViewCols((v) => (v === 1 ? 2 : 1))}>
-              {viewCols === 1 ? <LayoutGrid className="h-5 w-5" /> : <List className="h-5 w-5" />}
             </Button>
             <Button asChild variant="ghost" className="h-11 w-11 p-0 sm:w-auto sm:px-3" aria-label="Fale conosco pelo WhatsApp">
               <a href={phone ? `https://wa.me/${phone}` : "#catalogo"} target={phone ? "_blank" : undefined} rel="noopener noreferrer">
@@ -122,10 +107,6 @@ function Index() {
               <div className="flex items-center gap-2">
                 <strong className="font-display">Navegação</strong>
                 <span className="text-sm text-muted-foreground">· {list.length} produtos</span>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setViewCols(1)} aria-pressed={viewCols === 1}>1 coluna</Button>
-                <Button variant="outline" size="sm" onClick={() => setViewCols(2)} aria-pressed={viewCols === 2}>2 col.</Button>
               </div>
             </div>
             <div className="-mx-4 mb-2 flex gap-2 overflow-x-auto px-4 pb-2">
@@ -147,18 +128,22 @@ function Index() {
       <section className="bg-ink text-ink-foreground">
         <div className="mx-auto max-w-6xl px-4 py-7 md:py-10">
           <p className="mb-2 text-xs font-semibold uppercase text-primary">Serviços gráficos</p>
-          <h1 className="max-w-3xl break-words text-3xl font-extrabold leading-tight md:text-5xl">
-            {settings.store_name}
-          </h1>
-          <p className="mt-2 max-w-xl text-base text-ink-foreground/70">{settings.tagline}</p>
+          <h1 className="max-w-3xl break-words text-3xl font-extrabold leading-tight md:text-5xl">Impressão que destaca sua marca.</h1>
+          <p className="mt-2 max-w-xl text-base text-ink-foreground/70">{settings.tagline || "Soluções gráficas para sua empresa, seu negócio e suas ideias."}</p>
+          <a href="#catalogo" className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-primary px-5 font-bold text-primary-foreground transition hover:opacity-90">Ver produtos</a>
         </div>
       </section>
 
       <main id="catalogo" className="mx-auto max-w-6xl px-4 py-6">
-        <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-xl font-bold">Catálogo</h2>
-          <span className="text-sm text-muted-foreground">{list.length} produtos</span>
+        <div className="mb-4 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold">Nossos produtos</h2>
+          <span className="shrink-0 text-sm text-muted-foreground">{list.length} {list.length === 1 ? "produto" : "produtos"}</span>
         </div>
+        <label className="mb-4 flex min-h-12 items-center gap-3 rounded-xl border bg-card px-4 shadow-sm focus-within:ring-2 focus-within:ring-ring">
+          <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar cartões, banners, adesivos..." aria-label="Buscar produtos" className="h-12 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground" />
+          {search && <button type="button" onClick={() => setSearch("")} className="text-sm font-semibold text-primary">Limpar</button>}
+        </label>
 
         <div className="-mx-4 mb-5 hidden gap-2 overflow-x-auto px-4 pb-2 sm:flex">
           {categories.map((c) => (
@@ -190,7 +175,7 @@ function Index() {
 
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-muted-foreground sm:flex-row">
-          <span>© {new Date().getFullYear()} {settings.store_name}</span>
+          <span>© {new Date().getFullYear()} Print Center</span>
           <Link to="/admin" className="hover:text-foreground">Área do administrador</Link>
         </div>
       </footer>
