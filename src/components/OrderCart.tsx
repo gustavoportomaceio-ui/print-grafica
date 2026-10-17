@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { brl, calcPrice, type Settings } from "@/lib/catalog";
+import { supabase } from "@/integrations/supabase/client";
 import { buildOrderLink, customerSchema, orderTotals, type CartItem, type OrderItem } from "@/lib/order";
 
 type Props = {
@@ -27,7 +28,7 @@ export function OrderCart({ open, onOpenChange, items, settings, onChange, onRem
     if (!next) setStep("cart");
   };
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const result = customerSchema.safeParse(customer);
     if (!result.success) {
@@ -36,7 +37,31 @@ export function OrderCart({ open, onOpenChange, items, settings, onChange, onRem
     }
     if (!items.length) { setStep("cart"); return; }
     setErrors({});
-    window.open(buildOrderLink(settings, items, result.data), "_blank", "noopener,noreferrer");
+    const customerData = result.data;
+    const { total, hasQuote } = orderTotals(items);
+    const orderItems = items.map((item) => ({
+      product_id: item.product.id,
+      name: item.product.name,
+      quantity: item.quantity,
+      options: item.product.options.map((option) => `${option.name}: ${option.choices[item.selected[option.name] ?? 0]?.label ?? "-"}`),
+      unit_price: calcPrice(item.product, item.selected),
+      subtotal: calcPrice(item.product, item.selected) === null ? null : Number(calcPrice(item.product, item.selected)) * item.quantity,
+      notes: item.notes,
+    }));
+    const { error } = await supabase.from("orders").insert({
+      customer_name: customerData.name,
+      customer_whatsapp: customerData.whatsapp,
+      delivery_address: customerData.address,
+      payment_method: customerData.payment,
+      items: orderItems,
+      total,
+      has_quote: hasQuote,
+    });
+    if (error) {
+      setErrors({ name: "Não foi possível salvar o pedido. Tente novamente ou entre em contato conosco." });
+      return;
+    }
+    window.open(buildOrderLink(settings, items, customerData), "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -80,7 +105,7 @@ export function OrderCart({ open, onOpenChange, items, settings, onChange, onRem
               { key: "whatsapp", label: "WhatsApp", placeholder: "(11) 99999-9999", autoComplete: "tel", type: "tel" },
             ] as const).map((field) => <label key={field.key} className="grid gap-1.5 text-sm font-semibold"><span>{field.label}</span><Input aria-label={field.label} className="h-12 text-base" type={field.type} autoComplete={field.autoComplete} placeholder={field.placeholder} value={customer[field.key]} onChange={(event) => setCustomer({ ...customer, [field.key]: event.target.value })} />{errors[field.key] && <span className="text-xs font-medium text-destructive">{errors[field.key]}</span>}</label>)}
             <label className="grid gap-1.5 text-sm font-semibold"><span>Endereço de entrega</span><textarea aria-label="Endereço de entrega" className="min-h-24 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-base" value={customer.address} onChange={(event) => setCustomer({ ...customer, address: event.target.value })} placeholder="Rua, número, bairro, cidade, estado" />{errors.address && <span className="text-xs font-medium text-destructive">{errors.address}</span>}</label>
-            <label className="grid gap-1.5 text-sm font-semibold"><span>Forma de pagamento</span><select aria-label="Forma de pagamento" className="h-12 w-full rounded-md border border-input bg-background px-3 text-base" value={customer.payment} onChange={(event) => setCustomer({ ...customer, payment: event.target.value })}><option value="">Selecione</option><option value="pix">Pix</option><option value="cartao">Cartão</option><option value="boleto">Boleto</option><option value="dinheiro">Dinheiro</option></select>{errors.payment && <span className="text-xs font-medium text-destructive">{errors.payment}</span>}</label>
+            <label className="grid gap-1.5 text-sm font-semibold"><span>Forma de pagamento</span><select aria-label="Forma de pagamento" className="h-12 w-full rounded-md border border-input bg-background px-3 text-base" value={customer.payment} onChange={(event) => setCustomer({ ...customer, payment: event.target.value })}><option value="">Selecione</option><option value="Pix">Pix</option><option value="Cartão de crédito">Cartão de crédito</option><option value="Cartão de débito">Cartão de débito</option><option value="Dinheiro">Dinheiro</option></select>{errors.payment && <span className="text-xs font-medium text-destructive">{errors.payment}</span>}</label>
           </div>
           <div className="border-t bg-card p-5"><div className="mb-3 flex justify-between gap-2 text-sm"><span>{count} {count === 1 ? "item" : "itens"} · {totalLabel}</span><strong>{brl(total)}</strong></div><Button type="submit" className="h-12 w-full text-base font-bold" disabled={items.length === 0}><MessageCircle className="h-4 w-4" /> Enviar pedido</Button></div>
         </form>}

@@ -5,6 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import { Plus, Trash2, Save, LogOut, ImagePlus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { productsQuery, settingsQuery, type Product, type ProductOption } from "@/lib/catalog";
+import { AdminOrders } from "@/components/AdminOrders";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -65,40 +66,38 @@ function AdminPage() {
 }
 
 function AuthForm() {
-  const [mode, setMode] = useState<"in" | "up">("in");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    const normalized = username.trim().toLowerCase();
+    if (!/^[a-z0-9._-]{3,32}$/.test(normalized)) {
+      setMsg("Use um usuário de 3 a 32 caracteres: letras, números, ponto, hífen ou sublinhado.");
+      return;
+    }
     setBusy(true);
     setMsg("");
-    const res =
-      mode === "in"
-        ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/admin` } });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: `${normalized}@printgrafica-admin.com`,
+      password,
+    });
     setBusy(false);
-    if (res.error) return setMsg(res.error.message);
-    if (mode === "up" && !res.data.session) setMsg("Conta criada! Confirme pelo link enviado ao seu e-mail.");
+    if (error) setMsg("Usuário ou senha inválidos. Confirme também se o acesso administrativo foi configurado.");
   }
 
   return (
     <div className="grid min-h-screen place-items-center bg-ink px-4">
       <form onSubmit={submit} className="w-full max-w-sm space-y-4 rounded-2xl bg-card p-6 shadow-card">
         <h1 className="text-2xl font-extrabold">Painel do administrador</h1>
-        <p className="text-sm text-muted-foreground">
-          {mode === "in" ? "Entre para editar seu catálogo." : "A primeira conta criada vira a administradora."}
-        </p>
-        <input className={input} type="email" required placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input className={input} type="password" required minLength={6} placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)} />
-        {msg && <p className="text-sm text-accent-foreground">{msg}</p>}
+        <p className="text-sm text-muted-foreground">Entre com seu usuário e senha.</p>
+        <input className={input} type="text" autoComplete="username" required minLength={3} maxLength={32} placeholder="Usuário" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input className={input} type="password" autoComplete="current-password" required minLength={8} placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)} />
+        {msg && <p role="alert" className="text-sm text-destructive">{msg}</p>}
         <button disabled={busy} className={`${btn} w-full bg-primary text-primary-foreground`}>
-          {mode === "in" ? "Entrar" : "Criar conta"}
-        </button>
-        <button type="button" onClick={() => setMode(mode === "in" ? "up" : "in")} className="w-full text-sm text-muted-foreground underline">
-          {mode === "in" ? "Primeiro acesso? Criar conta" : "Já tenho conta"}
+          {busy ? "Entrando…" : "Entrar"}
         </button>
         <Link to="/" className="block text-center text-sm text-muted-foreground">← Voltar ao catálogo</Link>
       </form>
@@ -130,6 +129,7 @@ function Dashboard() {
         </div>
       </header>
       <main className="mx-auto max-w-5xl space-y-8 px-4 py-8">
+        <AdminOrders />
         <SettingsForm />
         <section>
           <div className="mb-4 flex items-center justify-between">
