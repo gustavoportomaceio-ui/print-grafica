@@ -128,7 +128,7 @@ function Index() {
           <img src="/images/banner.jpg" alt="Materiais gráficos impressos" className="h-full w-full object-cover object-center" />
         </div>
         <div className="hero-shade absolute inset-0" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-12 sm:px-6 md:min-h-[430px] md:grid-cols-[0.95fr_1.05fr] md:py-14 lg:px-8">
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 px-5 py-12 sm:px-6 md:min-h-[430px] md:grid-cols-[0.95fr_1.05fr] md:py-14 lg:px-8">
           <div className="hero-copy max-w-2xl">
             <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.28em] text-cyan">Impressão profissional</p>
             <h1 className="max-w-2xl text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-[3.35rem]">
