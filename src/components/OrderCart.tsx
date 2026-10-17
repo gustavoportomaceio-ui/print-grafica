@@ -17,7 +17,7 @@ type Props = {
 
 export function OrderCart({ open, onOpenChange, items, settings, onChange, onRemove }: Props) {
   const [step, setStep] = useState<"cart" | "details">("cart");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Partial<Record<"name" | "whatsapp" | "address" | "payment", string>>>({});
   const [customer, setCustomer] = useState({ name: "", whatsapp: "", address: "", payment: "" });
   const { total, hasQuote, count } = orderTotals(items);
   const totalLabel = hasQuote ? "Subtotal com preço" : "Total dos produtos";
