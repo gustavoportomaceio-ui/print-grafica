@@ -94,7 +94,7 @@ function AuthForm() {
         <h1 className="text-2xl font-extrabold">Painel do administrador</h1>
         <p className="text-sm text-muted-foreground">Entre com seu usuário e senha.</p>
         <input className={input} type="text" autoComplete="username" required minLength={3} maxLength={32} placeholder="Usuário" value={username} onChange={(e) => setUsername(e.target.value)} />
-        <input className={input} type="password" autoComplete="current-password" required minLength={8} placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input className={input} type="password" autoComplete="current-password" required minLength={6} placeholder="Senha (mínimo 6 caracteres)" value={password} onChange={(e) => setPassword(e.target.value)} />
         {msg && <p role="alert" className="text-sm text-destructive">{msg}</p>}
         <button disabled={busy} className={`${btn} w-full bg-primary text-primary-foreground`}>
           {busy ? "Entrando…" : "Entrar"}
