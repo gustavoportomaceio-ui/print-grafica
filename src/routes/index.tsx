@@ -82,8 +82,7 @@ function Index() {
   }
 
   const featuredCarouselRef = useRef<HTMLDivElement>(null);
-  const serviceCarouselRef = useRef<HTMLDivElement>(null);
-  const productCarouselRef = useRef<HTMLDivElement>(null);
+  const catalogCarouselRef = useRef<HTMLDivElement>(null);
   const scrollCarousel = (ref: { current: HTMLDivElement | null }, direction: -1 | 1) => {
     const el = ref.current;
     if (!el) return;
@@ -91,7 +90,13 @@ function Index() {
     const distance = firstCard ? firstCard.offsetWidth + 16 : el.clientWidth * 0.8;
     el.scrollBy({ left: distance * direction, behavior: "smooth" });
   };
-  const carouselCardClass = "w-[82%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)] xl:w-[calc(25%-0.75rem)]";
+  const carouselCardClass = "min-w-0";
+  const catalogItems = [...serviceItems, ...productItems];
+  const catalogPages = Array.from({ length: Math.ceil(catalogItems.length / 8) }, (_, page) => catalogItems.slice(page * 8, page * 8 + 8));
+  const scrollCatalog = (direction: -1 | 1) => {
+    const el = catalogCarouselRef.current;
+    if (el) el.scrollBy({ left: el.clientWidth * direction, behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen pb-24">
@@ -198,40 +203,36 @@ function Index() {
           </label>
         </div>
 
-        <section id="servicos" className="scroll-mt-28 pb-10" aria-label="Serviços gráficos">
+        <section id="catalogo" className="scroll-mt-28 pb-10" aria-label="Serviços e produtos">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Impressão profissional</p>
-              <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl">Serviços</h2>
-              <div className="mt-2 flex flex-wrap items-center gap-2"><p className="text-sm text-slate-300">Impressos e soluções gráficas para sua empresa.</p><span className="rounded-full border border-cyan/20 bg-cyan/10 px-2.5 py-1 text-xs font-bold text-cyan">{serviceItems.length} {serviceItems.length === 1 ? "serviço" : "serviços"}</span></div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Catálogo Print Center</p>
+              <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl">Serviços/Produtos</h2>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <p className="text-sm text-slate-300">Impressos, soluções gráficas e produtos personalizados.</p>
+                <span className="rounded-full border border-cyan/20 bg-cyan/10 px-2.5 py-1 text-xs font-bold text-cyan">{catalogItems.length} {catalogItems.length === 1 ? "item" : "itens"}</span>
+              </div>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <Button variant="outline" aria-label="Serviços anteriores" onClick={() => scrollCarousel(serviceCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
-              <Button variant="outline" aria-label="Próximos serviços" onClick={() => scrollCarousel(serviceCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
+            {catalogItems.length > 8 && (
+              <div className="flex shrink-0 gap-2">
+                <Button variant="outline" aria-label="Itens anteriores" onClick={() => scrollCatalog(-1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
+                <Button variant="outline" aria-label="Próximos itens" onClick={() => scrollCatalog(1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
+              </div>
+            )}
+          </div>
+          {catalogItems.length > 0 ? (
+            <div ref={catalogCarouselRef} className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto">
+              {catalogPages.map((pageItems, pageIndex) => (
+                <div key={pageIndex} data-carousel-card className="w-full shrink-0 snap-start pr-1">
+                  <div className="grid grid-cols-2 grid-rows-4 gap-3 sm:gap-4 md:grid-cols-4 md:grid-rows-2">
+                    {pageItems.map((p) => <div key={p.id} className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-          <div ref={serviceCarouselRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {serviceItems.map((p) => <div key={p.id} data-carousel-card className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
-          </div>
-          {serviceItems.length === 0 && <p className="rounded-xl border border-white/10 bg-[#11182d] px-5 py-8 text-sm text-slate-300">Nenhum serviço cadastrado nesta seção ainda.</p>}
-        </section>
-
-        <section id="catalogo" className="scroll-mt-28 border-t border-white/10 pt-8" aria-label="Produtos personalizados">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Brindes e materiais</p>
-              <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl">Produtos</h2>
-              <div className="mt-2 flex flex-wrap items-center gap-2"><p className="text-sm text-slate-300">Produtos personalizados para divulgar sua marca.</p><span className="rounded-full border border-magenta/25 bg-magenta/10 px-2.5 py-1 text-xs font-bold text-pink-300">{productItems.length} {productItems.length === 1 ? "produto" : "produtos"}</span></div>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              <Button variant="outline" aria-label="Produtos anteriores" onClick={() => scrollCarousel(productCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
-              <Button variant="outline" aria-label="Próximos produtos" onClick={() => scrollCarousel(productCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
-            </div>
-          </div>
-          <div ref={productCarouselRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {productItems.map((p) => <div key={p.id} data-carousel-card className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
-          </div>
-          {productItems.length === 0 && <p className="rounded-xl border border-white/10 bg-[#11182d] px-5 py-8 text-sm text-slate-300">Nenhum produto cadastrado nesta seção ainda.</p>}
+          ) : (
+            <p className="rounded-xl border border-white/10 bg-[#11182d] px-5 py-8 text-sm text-slate-300">Nenhum serviço ou produto cadastrado nesta seção ainda.</p>
+          )}
         </section>
       </main>
 
