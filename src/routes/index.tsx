@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, ShoppingBag, Menu, X, Search, ArrowRight, BadgeCheck, Zap, Headset } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { MessageCircle, ShoppingBag, Menu, X, Search, ArrowRight, BadgeCheck, Zap, Headset, ChevronLeft, ChevronRight } from "lucide-react";
 import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -40,6 +40,17 @@ function Index() {
   const [search, setSearch] = useState("");
   const filtered = cat === "Todos" ? visible : visible.filter((p) => p.category === cat);
   const list = filtered.filter((p) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR")));
+  const matchesSearch = (p: Product) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
+  const isService = (p: Product) => {
+    const explicit = p.category.trim().toLocaleLowerCase("pt-BR");
+    if (explicit === "serviços" || explicit === "servicos") return true;
+    if (explicit === "produtos" || explicit === "brindes") return false;
+    const name = p.name.toLocaleLowerCase("pt-BR");
+    return /cart(ão|ões|ao|oes) de visita|panfleto|flyer|\\bbanner\\b/.test(name)
+      && !/lona/.test(name);
+  };
+  const serviceItems = visible.filter((p) => isService(p) && matchesSearch(p));
+  const productItems = visible.filter((p) => !isService(p) && matchesSearch(p));
   const phone = settings.whatsapp.replace(/\D/g, "");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartReady, setCartReady] = useState(false);
@@ -76,7 +87,16 @@ function Index() {
     return true;
   }
 
-  const gridClass = "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+  const serviceCarouselRef = useRef<HTMLDivElement>(null);
+  const productCarouselRef = useRef<HTMLDivElement>(null);
+  const scrollCarousel = (ref: React.RefObject<HTMLDivElement | null>, direction: -1 | 1) => {
+    const el = ref.current;
+    if (!el) return;
+    const firstCard = el.querySelector<HTMLElement>("[data-carousel-card]");
+    const distance = firstCard ? firstCard.offsetWidth + 16 : el.clientWidth * 0.8;
+    el.scrollBy({ left: distance * direction, behavior: "smooth" });
+  };
+  const carouselCardClass = "w-[82%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)] xl:w-[calc(25%-0.75rem)]";
 
   return (
     <div className="min-h-screen pb-24">
@@ -141,7 +161,7 @@ function Index() {
                 <MessageCircle className="h-5 w-5" /> Falar com especialista
               </a>
             </div>
-            <div id="servicos" className="mt-8 grid max-w-xl scroll-mt-24 grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="mt-8 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="flex items-start gap-3"><span className="hero-feature-icon"><BadgeCheck className="h-5 w-5" /></span><span><strong className="block text-sm">Qualidade profissional</strong><small className="mt-1 block text-xs text-white/65">Impressão de alto padrão</small></span></div>
               <div className="flex items-start gap-3"><span className="hero-feature-icon"><Zap className="h-5 w-5" /></span><span><strong className="block text-sm">Produção ágil</strong><small className="mt-1 block text-xs text-white/65">Seus materiais no prazo</small></span></div>
               <div className="flex items-start gap-3"><span className="hero-feature-icon"><Headset className="h-5 w-5" /></span><span><strong className="block text-sm">Atendimento especializado</strong><small className="mt-1 block text-xs text-white/65">Do orçamento à entrega</small></span></div>
@@ -151,33 +171,55 @@ function Index() {
         </div>
       </section>
 
-      <main id="catalogo" className="catalog-section mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8 lg:py-10">
-        <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <main className="catalog-section mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8 lg:py-10">
+        <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Nossos produtos</p>
-            <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-3xl">Encontre o material ideal para sua marca</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">Soluções completas em impressão gráfica, com qualidade profissional e o melhor custo-benefício.</p>
+            <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Catálogo Print Center</p>
+            <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-3xl">Soluções para destacar sua marca</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">Explore nossos serviços gráficos e produtos personalizados.</p>
           </div>
-          <span className="text-sm text-slate-300 md:hidden">{list.length} {list.length === 1 ? "produto" : "produtos"}</span>
           <label className="flex min-h-12 w-full items-center gap-3 rounded-xl border border-white/15 bg-[#11182d] px-4 shadow-sm transition focus-within:border-cyan focus-within:ring-2 focus-within:ring-cyan/20 md:max-w-sm">
             <Search className="h-5 w-5 shrink-0 text-slate-500" />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar produtos..." aria-label="Buscar produtos" className="h-12 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-400" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar no catálogo..." aria-label="Buscar no catálogo" className="h-12 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-400" />
             {search && <button type="button" onClick={() => setSearch("")} className="text-sm font-semibold text-cyan">Limpar</button>}
           </label>
         </div>
 
-        <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
-          {categories.map((c) => (
-            <Button key={c} onClick={() => setCat(c)} variant="outline" aria-pressed={cat === c} className={"h-10 shrink-0 rounded-full border px-5 text-sm font-semibold transition " + (cat === c ? "border-magenta bg-magenta text-white hover:bg-magenta/90 hover:text-white" : "border-white/15 bg-[#11182d] text-slate-200 hover:border-cyan hover:bg-[#18223b] hover:text-white")}>
-              {c}
-            </Button>
-          ))}
-        </div>
+        <section id="servicos" className="scroll-mt-28 pb-10" aria-label="Serviços gráficos">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Impressão profissional</p>
+              <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl">Serviços</h2>
+              <p className="mt-1 text-sm text-slate-300">Impressos e soluções gráficas para sua empresa.</p>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <Button variant="outline" aria-label="Serviços anteriores" onClick={() => scrollCarousel(serviceCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronLeft className="h-5 w-5" /></Button>
+              <Button variant="outline" aria-label="Próximos serviços" onClick={() => scrollCarousel(serviceCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronRight className="h-5 w-5" /></Button>
+            </div>
+          </div>
+          <div ref={serviceCarouselRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {serviceItems.map((p) => <div key={p.id} data-carousel-card className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
+          </div>
+          {serviceItems.length === 0 && <p className="rounded-xl border border-white/10 bg-[#11182d] px-5 py-8 text-sm text-slate-300">Nenhum serviço cadastrado nesta seção ainda.</p>}
+        </section>
 
-        <div className={gridClass}>
-          {list.map((p) => <ProductCard key={p.id} product={p} onAdd={addItem} />)}
-        </div>
-        {list.length === 0 && <p className="py-20 text-center text-muted-foreground">Nenhum produto nesta categoria.</p>}
+        <section id="catalogo" className="scroll-mt-28 border-t border-white/10 pt-8" aria-label="Produtos personalizados">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Brindes e materiais</p>
+              <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl">Produtos</h2>
+              <p className="mt-1 text-sm text-slate-300">Produtos personalizados para divulgar sua marca.</p>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <Button variant="outline" aria-label="Produtos anteriores" onClick={() => scrollCarousel(productCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronLeft className="h-5 w-5" /></Button>
+              <Button variant="outline" aria-label="Próximos produtos" onClick={() => scrollCarousel(productCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronRight className="h-5 w-5" /></Button>
+            </div>
+          </div>
+          <div ref={productCarouselRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {productItems.map((p) => <div key={p.id} data-carousel-card className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
+          </div>
+          {productItems.length === 0 && <p className="rounded-xl border border-white/10 bg-[#11182d] px-5 py-8 text-sm text-slate-300">Nenhum produto cadastrado nesta seção ainda.</p>}
+        </section>
       </main>
 
       <footer id="contato" className="border-t border-white/10 bg-[#070d22]">
