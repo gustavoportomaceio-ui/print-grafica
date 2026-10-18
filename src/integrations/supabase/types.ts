@@ -58,6 +58,7 @@ export type Database = {
           active: boolean
           base_price: number | null
           category: string
+          showcase: string
           created_at: string
           description: string
           featured: boolean
@@ -72,6 +73,7 @@ export type Database = {
           active?: boolean
           base_price?: number | null
           category?: string
+          showcase?: string
           created_at?: string
           description?: string
           featured?: boolean
@@ -86,6 +88,7 @@ export type Database = {
           active?: boolean
           base_price?: number | null
           category?: string
+          showcase?: string
           created_at?: string
           description?: string
           featured?: boolean

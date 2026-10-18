@@ -7,6 +7,7 @@ export type Product = {
   id: string;
   name: string;
   category: string;
+  showcase: "servicos" | "produtos";
   description: string;
   image_url: string | null;
   base_price: number | null;

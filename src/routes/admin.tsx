@@ -111,7 +111,7 @@ function Dashboard() {
   const [editing, setEditing] = useState<Product | null>(null);
 
   const blank: Product = {
-    id: "", name: "", category: "Outros", description: "", image_url: null, base_price: 0,
+    id: "", name: "", category: "Outros", showcase: "produtos", description: "", image_url: null, base_price: 0,
     price_note: "", options: [{ name: "Quantidade", choices: [{ label: "100 unidades", price: 0 }] }],
     featured: false, active: true, sort_order: products.length + 1,
   };
@@ -146,7 +146,7 @@ function Dashboard() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-semibold">{p.name} {!p.active && <span className="text-xs text-muted-foreground">(oculto)</span>}</div>
-                  <div className="text-sm text-muted-foreground">{p.category}</div>
+                  <div className="text-sm text-muted-foreground">{p.category} · {p.showcase === "servicos" ? "Serviços" : "Produtos"}</div>
                 </div>
                 <div className="text-sm font-semibold">
                   {p.base_price !== null ? `R$ ${p.base_price.toFixed(2)}` : p.price_note || "Sob consulta"}
@@ -226,7 +226,7 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
     if (!p.name.trim()) return alert("Informe o nome do produto.");
     setBusy(true);
     const row = {
-      name: p.name, category: p.category, description: p.description, image_url: p.image_url,
+      name: p.name, category: p.category, showcase: p.showcase, description: p.description, image_url: p.image_url,
       base_price: hasPrice ? Number(p.base_price) || 0 : null, price_note: p.price_note,
       options: p.options as unknown as never, featured: p.featured, active: p.active, sort_order: p.sort_order,
     };
@@ -268,7 +268,13 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Nome"><input className={input} value={p.name} onChange={(e) => setP({ ...p, name: e.target.value })} /></Field>
-            <Field label="Categoria"><input className={input} value={p.category} onChange={(e) => setP({ ...p, category: e.target.value })} /></Field>
+            <Field label="Categoria do item"><input className={input} value={p.category} onChange={(e) => setP({ ...p, category: e.target.value })} placeholder="Ex.: Cartões, Copos, Chaveiros" /></Field>
+            <Field label="Exibir na vitrine">
+              <select className={input} value={p.showcase} onChange={(e) => setP({ ...p, showcase: e.target.value as Product["showcase"] })}>
+                <option value="servicos">Serviços</option>
+                <option value="produtos">Produtos</option>
+              </select>
+            </Field>
           </div>
           <Field label="Descrição">
             <textarea className={`${input} h-24 py-2`} value={p.description} onChange={(e) => setP({ ...p, description: e.target.value })} />

@@ -34,16 +34,8 @@ function Index() {
   const visible = products.filter((p) => p.active);
   const [search, setSearch] = useState("");
   const matchesSearch = (p: Product) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
-  const isService = (p: Product) => {
-    const explicit = p.category.trim().toLocaleLowerCase("pt-BR");
-    if (explicit === "serviços" || explicit === "servicos") return true;
-    if (explicit === "produtos" || explicit === "brindes") return false;
-    const name = p.name.toLocaleLowerCase("pt-BR");
-    return /cart(ão|ões|ao|oes) de visita|panfleto|flyer|\\bbanner\\b/.test(name)
-      && !/lona/.test(name);
-  };
-  const serviceItems = visible.filter((p) => isService(p) && matchesSearch(p));
-  const productItems = visible.filter((p) => !isService(p) && matchesSearch(p));
+  const serviceItems = visible.filter((p) => p.showcase === "servicos" && matchesSearch(p));
+  const productItems = visible.filter((p) => p.showcase === "produtos" && matchesSearch(p));
   const phone = settings.whatsapp.replace(/\D/g, "");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartReady, setCartReady] = useState(false);
