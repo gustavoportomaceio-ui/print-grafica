@@ -43,33 +43,33 @@
 
 :root {
   --radius: 0.875rem;
-  --background: #faf8f4;
-  --foreground: #101827;
-  --card: #ffffff;
-  --card-foreground: #101827;
-  --popover: #ffffff;
-  --popover-foreground: #101827;
+  --background: #070d22;
+  --foreground: #f8fafc;
+  --card: #11182d;
+  --card-foreground: #f8fafc;
+  --popover: #11182d;
+  --popover-foreground: #f8fafc;
   --primary: #08c4e9;
   --primary-foreground: #06101f;
-  --secondary: #f1eee8;
-  --secondary-foreground: #101827;
-  --muted: #f0eee9;
-  --muted-foreground: #647084;
-  --accent: #e7faff;
-  --accent-foreground: #101827;
+  --secondary: #18223b;
+  --secondary-foreground: #f8fafc;
+  --muted: #18223b;
+  --muted-foreground: #b7c0d3;
+  --accent: #18223b;
+  --accent-foreground: #f8fafc;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
-  --border: #e4e1dc;
-  --input: #e4e1dc;
+  --border: #28324b;
+  --input: #28324b;
   --ring: #08c4e9;
-  --ink: #071020;
+  --ink: #070d22;
   --ink-foreground: #f8fafc;
   --whatsapp: #08c4e9;
   --whatsapp-foreground: #06101f;
   --cyan: #08c4e9;
   --magenta: #ed168c;
   --yellow: #ffdf00;
-  --shadow-card: 0 2px 5px rgb(7 16 32 / 4%), 0 16px 35px -18px rgb(7 16 32 / 20%);
+  --shadow-card: 0 2px 5px rgb(0 0 0 / 20%), 0 16px 35px -18px rgb(0 0 0 / 60%);
 }
 
 @layer base {
@@ -89,16 +89,16 @@
   background: linear-gradient(90deg, var(--cyan) 0 25%, var(--magenta) 25% 50%, var(--yellow) 50% 75%, var(--ink) 75% 100%);
 }
 
-.site-header { box-shadow: 0 4px 18px rgb(7 16 32 / 5%); }
-.site-logo { border-radius: 0; }
+.site-header { box-shadow: 0 4px 18px rgb(0 0 0 / 18%); }
+.site-logo { border-radius: 0; display: block; }\n\n.catalog-section input { color: #f8fafc; }\n.catalog-section input::placeholder { color: #8b97ad; }\n.catalog-section .text-slate-500 { color: #b7c0d3; }\n.catalog-section .text-slate-700 { color: #dce3f0; }\n.catalog-section .border-slate-200 { border-color: #28324b; }\n.catalog-section .bg-white { background-color: #11182d; }\n.catalog-section .text-ink { color: #f8fafc; }\n.catalog-section .hover\\:bg-white:hover { background-color: #18223b; }
 .nav-link { position: relative; padding: 0.8rem 0; transition: color 160ms ease; }
-.nav-link:hover, .nav-link-active { color: #071020; }
+.nav-link:hover, .nav-link-active { color: #00bdeb; }
 .nav-link-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.3rem; height: 2px; border-radius: 999px; background: #08c4e9; }
-.hero-section { background: #071020; }
+.hero-section { background: #070d22; }
 .hero-image { z-index: 0; }
 .hero-shade {
   z-index: 1;
-  background: linear-gradient(90deg, #071020 0%, #071020 33%, rgb(7 16 32 / 94%) 45%, rgb(7 16 32 / 40%) 68%, rgb(7 16 32 / 10%) 100%);
+  background: linear-gradient(90deg, #070d22 0%, #070d22 33%, rgb(7 13 34 / 94%) 45%, rgb(7 13 34 / 40%) 68%, rgb(7 13 34 / 10%) 100%);
 }
 .hero-feature-icon {
   display: inline-flex;
@@ -114,6 +114,6 @@
 .catalog-section { scroll-margin-top: 5.5rem; }
 @media (max-width: 767px) {
   .hero-image { inset: auto 0 0; height: 190px; width: 100%; opacity: 0.3; }
-  .hero-shade { background: linear-gradient(180deg, #071020 0%, rgb(7 16 32 / 96%) 58%, rgb(7 16 32 / 65%) 100%); }
+  .hero-shade { background: linear-gradient(180deg, #070d22 0%, rgb(7 13 34 / 96%) 58%, rgb(7 13 34 / 65%) 100%); }
   .hero-copy { position: relative; z-index: 1; }
 }
