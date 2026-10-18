@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { Plus, Trash2, Save, LogOut, ImagePlus, X } from "lucide-react";
+import { Plus, Trash2, Save, LogOut, ImagePlus, X, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { productsQuery, settingsQuery, type Product, type ProductOption } from "@/lib/catalog";
 import { AdminOrders } from "@/components/AdminOrders";
@@ -140,18 +140,37 @@ function Dashboard() {
           </div>
           <div className="divide-y rounded-2xl border bg-card">
             {products.map((p) => (
-              <button key={p.id} onClick={() => setEditing(p)} className="flex w-full items-center gap-4 p-3 text-left hover:bg-muted">
-                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
-                  {p.image_url && <img src={p.image_url} alt="" className="h-full w-full object-cover" />}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate font-semibold">{p.name} {!p.active && <span className="text-xs text-muted-foreground">(oculto)</span>}</div>
-                  <div className="text-sm text-muted-foreground">{p.category} · {p.showcase === "servicos" ? "Serviços" : "Produtos"}</div>
-                </div>
-                <div className="text-sm font-semibold">
-                  {p.base_price !== null ? `R$ ${p.base_price.toFixed(2)}` : p.price_note || "Sob consulta"}
-                </div>
-              </button>
+              <div key={p.id} className="flex items-center gap-2 p-3 hover:bg-muted">
+                <button onClick={() => setEditing(p)} className="flex min-w-0 flex-1 items-center gap-4 text-left">
+                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+                    {p.image_url && <img src={p.image_url} alt="" className="h-full w-full object-cover" />}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-semibold">{p.name} {!p.active && <span className="text-xs text-muted-foreground">(oculto)</span>}</div>
+                    <div className="text-sm text-muted-foreground">{p.category} · {p.showcase === "servicos" ? "Serviços" : "Produtos"}</div>
+                  </div>
+                  <div className="shrink-0 text-sm font-semibold">
+                    {p.base_price !== null ? `R$ ${p.base_price.toFixed(2)}` : p.price_note || "Sob consulta"}
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  title={`Duplicar ${p.name}`}
+                  aria-label={`Duplicar ${p.name}`}
+                  onClick={() => setEditing({
+                    ...structuredClone(p),
+                    id: "",
+                    name: `${p.name} (cópia)`,
+                    active: true,
+                    featured: false,
+                    sort_order: products.length + 1,
+                  })}
+                  className={`${btn} h-9 shrink-0 border px-3`}
+                >
+                  <Copy className="h-4 w-4" />
+                  <span className="hidden sm:inline">Duplicar</span>
+                </button>
+              </div>
             ))}
           </div>
         </section>
