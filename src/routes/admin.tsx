@@ -112,7 +112,7 @@ function Dashboard() {
 
   const blank: Product = {
     id: "", name: "", category: "Outros", showcase: "produtos", description: "", image_url: null, base_price: 0,
-    price_note: "", options: [{ name: "Quantidade", choices: [{ label: "100 unidades", price: 0 }] }],
+    price_note: "", options: [],
     featured: false, active: true, sort_order: products.length + 1,
   };
 
@@ -237,6 +237,7 @@ async function fileToDataUrl(file: File): Promise<string> {
 function ProductEditor({ product, onClose, onSaved }: { product: Product; onClose: () => void; onSaved: () => void }) {
   const [p, setP] = useState<Product>(structuredClone(product));
   const [hasPrice, setHasPrice] = useState(product.base_price !== null);
+  const [hasOptions, setHasOptions] = useState(product.options.length > 0);
   const [busy, setBusy] = useState(false);
 
   const setOpt = (i: number, o: ProductOption) => setP({ ...p, options: p.options.map((x, j) => (j === i ? o : x)) });
@@ -247,7 +248,7 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
     const row = {
       name: p.name, category: p.category, showcase: p.showcase, description: p.description, image_url: p.image_url,
       base_price: hasPrice ? Number(p.base_price) || 0 : null, price_note: p.price_note,
-      options: p.options as unknown as never, featured: p.featured, active: p.active, sort_order: p.sort_order,
+      options: (hasOptions ? p.options : []) as unknown as never, featured: p.featured, active: p.active, sort_order: p.sort_order,
     };
     const { error } = p.id
       ? await supabase.from("products").update(row).eq("id", p.id)
@@ -314,32 +315,54 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
             <label className="flex items-center gap-2"><input type="checkbox" checked={p.featured} onChange={(e) => setP({ ...p, featured: e.target.checked })} /> Selo "Mais pedido"</label>
           </div>
 
-          <div>
-            <div className="mb-2 flex items-center justify-between">
-              <h3 className="font-bold">Opções (tamanho, quantidade, acabamento…)</h3>
-              <button className="text-sm font-semibold text-primary" onClick={() => setP({ ...p, options: [...p.options, { name: "Nova opção", choices: [{ label: "Opção 1", price: 0 }] }] })}>+ Opção</button>
-            </div>
-            <div className="space-y-3">
-              {p.options.map((o, i) => (
-                <div key={i} className="rounded-xl border bg-background p-3">
-                  <div className="mb-2 flex gap-2">
-                    <input className={input} value={o.name} onChange={(e) => setOpt(i, { ...o, name: e.target.value })} />
-                    <button className="px-2 text-destructive" onClick={() => setP({ ...p, options: p.options.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></button>
-                  </div>
-                  {o.choices.map((c, k) => (
-                    <div key={k} className="mb-2 flex gap-2">
-                      <input className={input} placeholder="Escolha" value={c.label} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, label: e.target.value } : x)) })} />
-                      {hasPrice && (
-                        <input type="number" step="0.01" title="Acréscimo em R$" className={`${input} w-28`} value={c.price} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, price: Number(e.target.value) } : x)) })} />
-                      )}
-                      <button className="px-2 text-muted-foreground" onClick={() => setOpt(i, { ...o, choices: o.choices.filter((_, m) => m !== k) })}><X className="h-4 w-4" /></button>
+          <div className="rounded-xl border p-4">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={hasOptions}
+                onChange={(e) => {
+                  const enabled = e.target.checked;
+                  setHasOptions(enabled);
+                  if (enabled && p.options.length === 0) {
+                    setP({ ...p, options: [{ name: "Quantidade", choices: [{ label: "100 unidades", price: 0 }] }] });
+                  }
+                }}
+              />
+              <span>
+                <span className="block font-bold">Este produto possui opções?</span>
+                <span className="block text-sm text-muted-foreground">Ative para cadastrar quantidade, acabamento, tamanho ou outras variações. Desative para produtos simples, sem opções.</span>
+              </span>
+            </label>
+            {hasOptions && (
+              <div className="mt-4 border-t pt-4">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <h3 className="font-bold">Opções (tamanho, quantidade, acabamento…)</h3>
+                  <button className="text-sm font-semibold text-primary" onClick={() => setP({ ...p, options: [...p.options, { name: "Nova opção", choices: [{ label: "Opção 1", price: 0 }] }] })}>+ Opção</button>
+                </div>
+                <div className="space-y-3">
+                  {p.options.map((o, i) => (
+                    <div key={i} className="rounded-xl border bg-background p-3">
+                      <div className="mb-2 flex gap-2">
+                        <input className={input} value={o.name} onChange={(e) => setOpt(i, { ...o, name: e.target.value })} />
+                        <button className="px-2 text-destructive" onClick={() => setP({ ...p, options: p.options.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></button>
+                      </div>
+                      {o.choices.map((choice, k) => (
+                        <div key={k} className="mb-2 flex gap-2">
+                          <input className={input} placeholder="Escolha" value={choice.label} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, label: e.target.value } : x)) })} />
+                          {hasPrice && (
+                            <input type="number" step="0.01" title="Acréscimo em R$" className={`${input} w-28`} value={choice.price} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, price: Number(e.target.value) } : x)) })} />
+                          )}
+                          <button className="px-2 text-muted-foreground" onClick={() => setOpt(i, { ...o, choices: o.choices.filter((_, m) => m !== k) })}><X className="h-4 w-4" /></button>
+                        </div>
+                      ))}
+                      <button className="text-sm text-primary" onClick={() => setOpt(i, { ...o, choices: [...o.choices, { label: "", price: 0 }] })}>+ Escolha</button>
                     </div>
                   ))}
-                  <button className="text-sm text-primary" onClick={() => setOpt(i, { ...o, choices: [...o.choices, { label: "", price: 0 }] })}>+ Escolha</button>
                 </div>
-              ))}
-            </div>
-            {hasPrice && <p className="mt-2 text-xs text-muted-foreground">O valor ao lado de cada escolha é somado ao preço base.</p>}
+                {hasPrice && <p className="mt-2 text-xs text-muted-foreground">O valor ao lado de cada escolha é somado ao preço base.</p>}
+              </div>
+            )}
           </div>
         </div>
 
