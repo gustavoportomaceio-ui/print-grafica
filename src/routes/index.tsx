@@ -224,8 +224,8 @@ function Index() {
             <div ref={catalogCarouselRef} className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto">
               {catalogPages.map((pageItems, pageIndex) => (
                 <div key={pageIndex} data-carousel-card className="w-full shrink-0 snap-start pr-1">
-                  <div className="grid grid-cols-2 grid-rows-4 gap-3 sm:gap-4 md:grid-cols-4 md:grid-rows-2">
-                    {pageItems.map((p) => <div key={p.id} className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
+                  <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto sm:gap-4">
+                    {pageItems.map((p) => <div key={p.id} data-catalog-item className={`w-full shrink-0 snap-start sm:w-[calc(50%-0.375rem)] md:w-[calc(25%-0.75rem)] ${carouselCardClass}`}><ProductCard product={p} onAdd={addItem} /></div>)}
                   </div>
                 </div>
               ))}
