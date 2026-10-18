@@ -81,12 +81,12 @@ function Index() {
   return (
     <div className="min-h-screen pb-24">
       <div className="cmyk-bar h-1.5" />
-      <header className="site-header sticky top-0 z-20 border-b border-black/5 bg-white/95 backdrop-blur">
+      <header className="site-header sticky top-0 z-20 border-b border-white/10 bg-[#070d22]/95 text-white backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
           <Link to="/" aria-label="Print Center - início" className="flex shrink-0 items-center">
-            <img src="/images/a481ab0a-1126-4cba-8580-d3f037956c93.jpeg" alt="Print Center" className="site-logo h-12 w-auto max-w-[174px] object-contain sm:h-14" />
+            <img src="/images/print-center-logo.svg" alt="Print Center" className="site-logo h-14 w-auto max-w-[190px] object-contain sm:h-[4.5rem] sm:max-w-[220px]" />
           </Link>
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-700 lg:flex" aria-label="Navegação principal">
+          <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-200 lg:flex" aria-label="Navegação principal">
             <a className="nav-link nav-link-active" href="#inicio">Início</a>
             <a className="nav-link" href="#catalogo">Produtos</a>
             <a className="nav-link" href="#catalogo">Acabamentos</a>
@@ -99,7 +99,7 @@ function Index() {
                 <MessageCircle className="h-4 w-4" /> <span className="hidden sm:inline">Solicitar orçamento</span><span className="sm:hidden">Orçamento</span>
               </a>
             </Button>
-            <Button variant="ghost" className="relative h-11 w-11 p-0 text-ink" aria-label={"Abrir carrinho, " + count + " itens"} onClick={() => setCartOpen(true)}>
+            <Button variant="ghost" className="relative h-11 w-11 p-0 text-white hover:bg-white/10 hover:text-white" aria-label={"Abrir carrinho, " + count + " itens"} onClick={() => setCartOpen(true)}>
               <ShoppingBag className="h-5 w-5" />
               <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-magenta px-1 text-[10px] font-bold text-white">{count}</span>
             </Button>
@@ -109,15 +109,15 @@ function Index() {
           </div>
         </div>
         {mobileMenuOpen && (
-          <div className="border-t bg-white px-4 py-3 lg:hidden">
+          <div className="border-t border-white/10 bg-[#070d22] px-4 py-3 lg:hidden">
             <nav className="mx-auto flex max-w-7xl flex-wrap gap-2" aria-label="Menu móvel">
               {categories.map((c) => (
                 <Button key={c} onClick={() => { setCat(c); setMobileMenuOpen(false); document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" }); }} variant={cat === c ? "default" : "outline"} className="h-10 rounded-full px-4 text-sm">
                   {c}
                 </Button>
               ))}
-              <a href="#diferenciais" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border px-4 text-sm font-semibold">Sobre nós</a>
-              <a href="#contato" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border px-4 text-sm font-semibold">Contato</a>
+              <a href="#diferenciais" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Sobre nós</a>
+              <a href="#contato" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Contato</a>
             </nav>
           </div>
         )}
@@ -153,24 +153,24 @@ function Index() {
         </div>
       </section>
 
-      <main id="catalogo" className="catalog-section mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      <main id="catalogo" className="catalog-section mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8 lg:py-10">
         <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Nossos produtos</p>
             <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-3xl">Encontre o material ideal para sua marca</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base">Soluções completas em impressão gráfica, com qualidade profissional e o melhor custo-benefício.</p>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">Soluções completas em impressão gráfica, com qualidade profissional e o melhor custo-benefício.</p>
           </div>
-          <span className="text-sm text-slate-500 md:hidden">{list.length} {list.length === 1 ? "produto" : "produtos"}</span>
-          <label className="flex min-h-12 w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 shadow-sm transition focus-within:border-cyan focus-within:ring-2 focus-within:ring-cyan/20 md:max-w-sm">
+          <span className="text-sm text-slate-300 md:hidden">{list.length} {list.length === 1 ? "produto" : "produtos"}</span>
+          <label className="flex min-h-12 w-full items-center gap-3 rounded-xl border border-white/15 bg-[#11182d] px-4 shadow-sm transition focus-within:border-cyan focus-within:ring-2 focus-within:ring-cyan/20 md:max-w-sm">
             <Search className="h-5 w-5 shrink-0 text-slate-500" />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar produtos..." aria-label="Buscar produtos" className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar produtos..." aria-label="Buscar produtos" className="h-12 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-400" />
             {search && <button type="button" onClick={() => setSearch("")} className="text-sm font-semibold text-cyan">Limpar</button>}
           </label>
         </div>
 
         <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
           {categories.map((c) => (
-            <Button key={c} onClick={() => setCat(c)} variant="outline" aria-pressed={cat === c} className={"h-10 shrink-0 rounded-full border px-5 text-sm font-semibold transition " + (cat === c ? "border-ink bg-ink text-white hover:bg-ink/90 hover:text-white" : "border-slate-200 bg-white text-slate-700 hover:border-cyan hover:bg-white")}>
+            <Button key={c} onClick={() => setCat(c)} variant="outline" aria-pressed={cat === c} className={"h-10 shrink-0 rounded-full border px-5 text-sm font-semibold transition " + (cat === c ? "border-cyan bg-cyan text-ink hover:bg-cyan/90 hover:text-ink" : "border-white/15 bg-[#11182d] text-slate-200 hover:border-cyan hover:bg-[#18223b] hover:text-white")}>
               {c}
             </Button>
           ))}
@@ -182,17 +182,17 @@ function Index() {
         {list.length === 0 && <p className="py-20 text-center text-muted-foreground">Nenhum produto nesta categoria.</p>}
       </main>
 
-      <footer id="contato" className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-7 text-sm text-slate-500 sm:flex-row sm:px-6 lg:px-8">
+      <footer id="contato" className="border-t border-white/10 bg-[#070d22]">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-7 text-sm text-slate-300 sm:flex-row sm:px-6 lg:px-8">
           <span>© {new Date().getFullYear()} Print Center · Impressão que destaca sua marca.</span>
-          <div className="flex items-center gap-4"><a href={phone ? "https://wa.me/" + phone : "#catalogo"} target={phone ? "_blank" : undefined} rel="noopener noreferrer" className="font-semibold text-ink hover:text-cyan">Fale conosco</a><Link to="/admin" className="hover:text-foreground">Área do administrador</Link></div>
+          <div className="flex items-center gap-4"><a href={phone ? "https://wa.me/" + phone : "#catalogo"} target={phone ? "_blank" : undefined} rel="noopener noreferrer" className="font-semibold text-white hover:text-cyan">Fale conosco</a><Link to="/admin" className="text-slate-300 hover:text-white">Área do administrador</Link></div>
         </div>
       </footer>
 
       {cartError && <p role="alert" className="px-4 text-center text-sm text-destructive">{cartError}</p>}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-card backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-[#070d22]/95 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 text-white shadow-card backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-          <div className="min-w-0"><p className="text-xs text-slate-500">{count} {count === 1 ? "item" : "itens"}{hasQuote ? " · + sob consulta" : ""}</p><p className="font-display text-lg font-extrabold text-ink">{brl(total)}</p></div>
+          <div className="min-w-0"><p className="text-xs text-slate-300">{count} {count === 1 ? "item" : "itens"}{hasQuote ? " · + sob consulta" : ""}</p><p className="font-display text-lg font-extrabold text-white">{brl(total)}</p></div>
           <Button className="h-12 rounded-xl px-5 text-sm font-extrabold" onClick={() => setCartOpen(true)}><ShoppingBag className="h-4 w-4" /> {count ? "Ver pedido" : "Ver carrinho"}</Button>
         </div>
       </div>
