@@ -54,42 +54,39 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
           </div>
 
           {product.options.length > 0 && (
-          <details className="group" onToggle={() => setAdded(false)}>
-            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 border-y border-white/10 py-2 text-sm font-semibold text-slate-100">Personalizar pedido <ChevronDown className="h-4 w-4 shrink-0 transition-transform group-open:rotate-180" /></summary>
-            <div className="grid gap-3 pt-3">
-            {product.options.map((o) => (
-              <label key={o.name} className="grid gap-1">
+            <div className="grid gap-3">
+              {product.options.map((o) => (
+                <label key={o.name} className="grid gap-1">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {o.name}
+                  </span>
+                  <select
+                    value={sel[o.name] ?? 0}
+                    onChange={(e) => { setSel({ ...sel, [o.name]: Number(e.target.value) }); setAdded(false); }}
+                    className="h-12 w-full min-w-0 rounded-md border border-input bg-background px-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    {o.choices.map((c, i) => (
+                      <option key={i} value={i}>
+                        {c.label}
+                        {c.price === "quote" ? " (A consultar)" : product.base_price !== null && Number(c.price) > 0 ? ` (+${brl(Number(c.price))})` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+              <label className="grid gap-1">
                 <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {o.name}
+                  Observações (opcional)
                 </span>
-                <select
-                  value={sel[o.name] ?? 0}
-                  onChange={(e) => { setSel({ ...sel, [o.name]: Number(e.target.value) }); setAdded(false); }}
-                  className="h-12 w-full min-w-0 rounded-md border border-input bg-background px-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  {o.choices.map((c, i) => (
-                    <option key={i} value={i}>
-                      {c.label}
-                      {c.price === "quote" ? " (A consultar)" : product.base_price !== null && Number(c.price) > 0 ? ` (+${brl(Number(c.price))})` : ""}
-                    </option>
-                  ))}
-                </select>
+                <Input
+                  value={notes}
+                  maxLength={500}
+                  onChange={(e) => { setNotes(e.target.value); setAdded(false); }}
+                  placeholder="Ex.: já tenho a arte pronta"
+                  className="h-12 text-base"
+                />
               </label>
-            ))}
-            <label className="grid gap-1">
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Observações (opcional)
-              </span>
-              <Input
-                value={notes}
-                maxLength={500}
-                onChange={(e) => { setNotes(e.target.value); setAdded(false); }}
-                placeholder="Ex.: já tenho a arte pronta"
-                className="h-12 text-base"
-              />
-            </label>
             </div>
-          </details>
           )}
 
           <div className="mt-auto flex items-end justify-between gap-3 pt-1">
