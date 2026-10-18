@@ -88,8 +88,8 @@ function Index() {
           </Link>
           <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-200 lg:flex" aria-label="Navegação principal">
             <a className="nav-link nav-link-active" href="#inicio">Início</a>
+            <a className="nav-link" href="#servicos">Serviços</a>
             <a className="nav-link" href="#catalogo">Produtos</a>
-            <a className="nav-link" href="#catalogo">Acabamentos</a>
             <a className="nav-link" href="#diferenciais">Sobre nós</a>
             <a className="nav-link" href="#contato">Contato</a>
           </nav>
@@ -111,11 +111,9 @@ function Index() {
         {mobileMenuOpen && (
           <div className="border-t border-white/10 bg-[#070d22] px-4 py-3 lg:hidden">
             <nav className="mx-auto flex max-w-7xl flex-wrap gap-2" aria-label="Menu móvel">
-              {categories.map((c) => (
-                <Button key={c} onClick={() => { setCat(c); setMobileMenuOpen(false); document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" }); }} variant={cat === c ? "default" : "outline"} className="h-10 rounded-full px-4 text-sm">
-                  {c}
-                </Button>
-              ))}
+              <a href="#inicio" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Início</a>
+              <a href="#servicos" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Serviços</a>
+              <a href="#catalogo" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Produtos</a>
               <a href="#diferenciais" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Sobre nós</a>
               <a href="#contato" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Contato</a>
             </nav>
@@ -143,7 +141,7 @@ function Index() {
                 <MessageCircle className="h-5 w-5" /> Falar com especialista
               </a>
             </div>
-            <div id="diferenciais" className="mt-8 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
+            <div id="servicos" className="mt-8 grid max-w-xl scroll-mt-24 grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="flex items-start gap-3"><span className="hero-feature-icon"><BadgeCheck className="h-5 w-5" /></span><span><strong className="block text-sm">Qualidade profissional</strong><small className="mt-1 block text-xs text-white/65">Impressão de alto padrão</small></span></div>
               <div className="flex items-start gap-3"><span className="hero-feature-icon"><Zap className="h-5 w-5" /></span><span><strong className="block text-sm">Produção ágil</strong><small className="mt-1 block text-xs text-white/65">Seus materiais no prazo</small></span></div>
               <div className="flex items-start gap-3"><span className="hero-feature-icon"><Headset className="h-5 w-5" /></span><span><strong className="block text-sm">Atendimento especializado</strong><small className="mt-1 block text-xs text-white/65">Do orçamento à entrega</small></span></div>
