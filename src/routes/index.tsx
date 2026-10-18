@@ -180,7 +180,7 @@ function Index() {
                 <Button variant="outline" aria-label="Próximos destaques" onClick={() => scrollCarousel(featuredCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
               </div>
             </div>
-            <div ref={featuredCarouselRef} className="flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 active:cursor-grabbing touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div ref={featuredCarouselRef} className="flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 active:cursor-grabbing touch-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {featuredItems.map((p) => <div key={p.id} data-carousel-card className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
             </div>
           </section>
