@@ -93,7 +93,7 @@ export function OrderCart({ open, onOpenChange, items, settings, onChange, onRem
                     </select>
                   </label>
                 ))}</div></details>
-                <div className="mt-3 flex items-center justify-between gap-2"><div className="flex items-center gap-2"><Button variant="outline" size="icon" className="h-11 w-11" aria-label={`Diminuir quantidade de ${item.product.name}`} onClick={() => onChange(item.id, { quantity: Math.max(1, item.quantity - 1) })}><Minus /></Button><span className="min-w-8 text-center text-sm font-semibold">{item.quantity}</span><Button variant="outline" size="icon" className="h-11 w-11" aria-label={`Aumentar quantidade de ${item.product.name}`} onClick={() => onChange(item.id, { quantity: item.quantity + 1 })}><Plus /></Button></div><strong className="text-base font-bold">{brl(price * item.quantity)}</strong></div>
+                <div className="mt-3 flex items-center justify-between gap-2"><div className="flex items-center gap-2"><Button variant="outline" size="icon" className="h-11 w-11" aria-label={`Diminuir quantidade de ${item.product.name}`} onClick={() => onChange(item.id, { quantity: Math.max(1, item.quantity - 1) })}><Minus /></Button><span className="min-w-8 text-center text-sm font-semibold">{item.quantity}</span><Button variant="outline" size="icon" className="h-11 w-11" aria-label={`Aumentar quantidade de ${item.product.name}`} onClick={() => onChange(item.id, { quantity: item.quantity + 1 })}><Plus /></Button></div><strong className="text-base font-bold">{price === null ? (item.product.price_note || "Sob consulta") : brl(price * item.quantity)}</strong></div>
               </article>;
             })}
           </div>
