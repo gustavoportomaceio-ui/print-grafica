@@ -215,6 +215,40 @@ function Index() {
         </section>
       </main>
 
+      <section id="diferenciais" className="scroll-mt-24 border-t border-white/10 bg-[#0b1228] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div>
+            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Conheça a Print Center</p>
+            <h2 className="max-w-2xl text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">Sua marca merece ser <span className="text-cyan">lembrada.</span></h2>
+            <p className="mt-5 text-base leading-relaxed text-slate-300">Na <strong className="text-white">Print Center</strong>, acreditamos que cada impressão é uma oportunidade de destacar sua marca, transmitir confiança e deixar uma ótima impressão. Há mais de 5 anos no mercado, trabalhamos para transformar ideias em materiais gráficos que valorizam negócios, fortalecem marcas e aproximam empresas de seus clientes.</p>
+            <p className="mt-4 text-base leading-relaxed text-slate-300">Oferecemos soluções gráficas para diferentes necessidades, de cartões de visita e panfletos a banners, adesivos e materiais personalizados. Nosso compromisso é unir qualidade, atenção aos detalhes e atendimento próximo para ajudar cada cliente a encontrar a melhor solução para seu projeto.</p>
+            <p className="mt-4 text-base leading-relaxed text-slate-300">Sabemos que por trás de cada pedido existe um objetivo: divulgar um negócio, conquistar novos clientes, apresentar um produto ou tornar uma marca mais presente no dia a dia. Por isso, cada trabalho é uma oportunidade de contribuir para o crescimento de quem confia em nós.</p>
+            <div className="mt-6 rounded-r-2xl border-l-4 border-magenta bg-white/[0.04] px-5 py-4">
+              <p className="text-lg font-extrabold leading-relaxed text-white sm:text-xl">Mais do que imprimir, queremos fazer parte da sua história.</p>
+              <p className="mt-2 text-sm font-semibold text-cyan">Print Center — Impressão que destaca sua marca.</p>
+            </div>
+            <a href="#contato" className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-magenta px-5 py-3 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:brightness-110">Vamos conversar? <ArrowRight className="h-4 w-4" /></a>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-[#11182d] p-5 transition hover:border-cyan/35 sm:col-span-2 sm:p-6">
+              <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan/10 text-cyan"><BadgeCheck className="h-6 w-6" /></span>
+              <h3 className="text-lg font-extrabold text-white">Qualidade em cada detalhe</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">Materiais gráficos pensados para apresentar sua marca com profissionalismo e cuidado.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-[#11182d] p-5 transition hover:border-cyan/35">
+              <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-magenta/10 text-pink-300"><Zap className="h-6 w-6" /></span>
+              <h3 className="text-lg font-extrabold text-white">Soluções para sua ideia</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">Uma variedade de opções para divulgar seu negócio e fortalecer sua identidade.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-[#11182d] p-5 transition hover:border-cyan/35">
+              <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan/10 text-cyan"><Headset className="h-6 w-6" /></span>
+              <h3 className="text-lg font-extrabold text-white">Atendimento próximo</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">Ajudamos você a encontrar a solução mais adequada para cada projeto.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="contato" className="border-t border-white/10 bg-gradient-to-b from-[#11182d] to-[#070d22] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
