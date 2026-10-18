@@ -177,8 +177,8 @@ function Index() {
             <div className="mb-5 flex items-end justify-between gap-3">
               <div>
                 <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Seleção especial Print Center</p>
-                <h2 className="text-2xl font-extrabold leading-tight text-white sm:text-3xl">{(!settings.tagline?.trim() || settings.tagline.trim() === "Impressão de qualidade, entrega rápida.") ? "Tudo o que você precisa para o volta às aulas do seu filho(a)!" : settings.tagline.trim()}</h2>
-                <p className="mt-2 text-sm text-slate-300">Confira nossos produtos em destaque.</p>
+                <h2 className="text-2xl font-extrabold leading-tight text-magenta sm:text-3xl">Confira aqui nossos destaques!</h2>
+                <p className="mt-2 text-sm text-slate-300">Tudo o que você precisa para o volta às aulas do seu filho(a)!</p>
               </div>
               <div className="flex shrink-0 gap-2">
                 <Button variant="outline" aria-label="Destaques anteriores" onClick={() => scrollCarousel(featuredCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
