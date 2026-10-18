@@ -36,6 +36,7 @@ function Index() {
   const matchesSearch = (p: Product) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
   const serviceItems = visible.filter((p) => p.showcase === "servicos" && matchesSearch(p));
   const productItems = visible.filter((p) => p.showcase === "produtos" && matchesSearch(p));
+  const featuredItems = visible.filter((p) => p.featured && matchesSearch(p));
   const phone = "5582996926540";
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartReady, setCartReady] = useState(false);
@@ -80,6 +81,7 @@ function Index() {
     return true;
   }
 
+  const featuredCarouselRef = useRef<HTMLDivElement>(null);
   const serviceCarouselRef = useRef<HTMLDivElement>(null);
   const productCarouselRef = useRef<HTMLDivElement>(null);
   const scrollCarousel = (ref: { current: HTMLDivElement | null }, direction: -1 | 1) => {
@@ -165,6 +167,24 @@ function Index() {
       </section>
 
       <main className="catalog-section mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8 lg:py-10">
+        {featuredItems.length > 0 && (
+          <section className="mb-10 rounded-3xl border border-magenta/25 bg-gradient-to-br from-[#11182d] via-[#101a35] to-[#172441] p-4 shadow-card sm:p-6" aria-label="Produtos em destaque">
+            <div className="mb-5 flex items-end justify-between gap-3">
+              <div>
+                <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Seleção especial Print Center</p>
+                <h2 className="text-2xl font-extrabold leading-tight text-white sm:text-3xl">{settings.tagline?.trim() || "Volta às aulas"}</h2>
+                <p className="mt-2 text-sm text-slate-300">Confira nossos produtos em destaque.</p>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                <Button variant="outline" aria-label="Destaques anteriores" onClick={() => scrollCarousel(featuredCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
+                <Button variant="outline" aria-label="Próximos destaques" onClick={() => scrollCarousel(featuredCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
+              </div>
+            </div>
+            <div ref={featuredCarouselRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {featuredItems.map((p) => <div key={p.id} data-carousel-card className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
+            </div>
+          </section>
+        )}
         <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Catálogo Print Center</p>
