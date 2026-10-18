@@ -186,7 +186,7 @@ function Index() {
               </div>
             </div>
             <div ref={featuredCarouselRef} className="flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 active:cursor-grabbing touch-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {featuredItems.map((p) => <div key={p.id} data-carousel-card className={carouselCardClass}><ProductCard product={p} onAdd={addItem} /></div>)}
+              {featuredItems.slice(0, 4).map((p) => <div key={p.id} data-carousel-card className="w-[82%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)] xl:w-[calc(25%-0.75rem)]"><ProductCard product={p} onAdd={addItem} /></div>)}
             </div>
           </section>
         )}
