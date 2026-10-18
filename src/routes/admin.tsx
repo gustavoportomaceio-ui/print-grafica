@@ -207,7 +207,7 @@ function SettingsForm() {
       <div className="grid gap-3 md:grid-cols-3">
         <Field label="Nome da loja"><input className={input} value={s.store_name} onChange={(e) => setS({ ...s, store_name: e.target.value })} /></Field>
         <Field label="WhatsApp (com DDI e DDD)"><input className={input} placeholder="5511999999999" value={s.whatsapp} onChange={(e) => setS({ ...s, whatsapp: e.target.value })} /></Field>
-        <Field label="Frase de destaque"><input className={input} value={s.tagline} onChange={(e) => setS({ ...s, tagline: e.target.value })} /></Field>
+        <Field label="Nome do carrossel em destaque"><input className={input} placeholder="Volta às aulas" value={s.tagline} onChange={(e) => setS({ ...s, tagline: e.target.value })} /></Field>
       </div>
       <button onClick={save} className={`${btn} mt-4 bg-ink text-ink-foreground`}><Save className="h-4 w-4" /> {saved ? "Salvo!" : "Salvar"}</button>
     </section>
@@ -312,7 +312,7 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
           </div>
           <div className="flex gap-6 text-sm font-medium">
             <label className="flex items-center gap-2"><input type="checkbox" checked={p.active} onChange={(e) => setP({ ...p, active: e.target.checked })} /> Visível no catálogo</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={p.featured} onChange={(e) => setP({ ...p, featured: e.target.checked })} /> Selo "Mais pedido"</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={p.featured} onChange={(e) => setP({ ...p, featured: e.target.checked })} /> Exibir no carrossel em destaque</label>
           </div>
 
           <div className="rounded-xl border p-4">

@@ -42,7 +42,7 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
           </span>
           {product.featured && (
             <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-magenta px-3 py-1 text-xs font-bold text-white shadow-lg">
-              Mais pedido
+              Em destaque
             </span>
           )}
         </div>
