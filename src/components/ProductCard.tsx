@@ -110,16 +110,27 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
 
       {product.image_url && (
         <Dialog open={imageOpen} onOpenChange={setImageOpen}>
-          <DialogContent className="w-[calc(100vw-2rem)] max-w-5xl border-white/10 bg-[#070d22] p-3 text-white sm:p-5">
-            <DialogTitle className="pr-10 text-base font-bold">{product.name}</DialogTitle>
-            <div className="flex max-h-[82vh] items-center justify-center overflow-auto rounded-lg bg-black/20">
-              <img
-                src={product.image_url}
-                alt={`Imagem ampliada de ${product.name}`}
-                className="max-h-[78vh] max-w-full object-contain"
-              />
+          <DialogContent className="w-[calc(100vw-2rem)] max-w-6xl border-white/10 bg-[#070d22] p-3 text-white sm:p-5">
+            <div className="grid max-h-[82vh] grid-cols-1 gap-4 overflow-y-auto md:grid-cols-[1.2fr_0.8fr] md:items-start">
+              <div className="flex min-h-0 items-center justify-center rounded-lg bg-black/20 p-2">
+                <img
+                  src={product.image_url}
+                  alt={`Imagem ampliada de ${product.name}`}
+                  className="max-h-[65vh] max-w-full object-contain"
+                />
+              </div>
+              <div className="min-w-0 px-1 pb-2 md:py-2">
+                <DialogTitle className="pr-10 text-lg font-bold leading-tight sm:text-xl">{product.name}</DialogTitle>
+                <p className="mt-2 text-xs font-bold uppercase tracking-wider text-cyan">{product.category}</p>
+                <h3 className="mt-5 text-sm font-bold text-white">Descrição completa</h3>
+                <p className="mt-2 whitespace-pre-line break-words text-sm leading-relaxed text-slate-300">{product.description || "Não há descrição cadastrada para este item."}</p>
+                <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                  <p className="text-xs font-medium text-slate-400">{price !== null ? "Valor por pedido" : "Preço"}</p>
+                  <p className="mt-1 break-words text-xl font-extrabold text-white">{price !== null ? brl(price) : product.price_note || "Sob consulta"}</p>
+                </div>
+              </div>
             </div>
-            <p className="text-center text-xs text-slate-400">Clique fora da imagem ou no X para fechar.</p>
+            <p className="text-center text-xs text-slate-400">Clique fora da janela ou no X para fechar.</p>
           </DialogContent>
         </Dialog>
       )}
