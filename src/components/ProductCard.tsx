@@ -53,6 +53,7 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
             <p className="mt-2 line-clamp-3 min-h-[3.75rem] text-sm leading-relaxed text-slate-300">{product.description}</p>
           </div>
 
+          {product.options.length > 0 && (
           <details className="group" onToggle={() => setAdded(false)}>
             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 border-y border-white/10 py-2 text-sm font-semibold text-slate-100">Personalizar pedido <ChevronDown className="h-4 w-4 shrink-0 transition-transform group-open:rotate-180" /></summary>
             <div className="grid gap-3 pt-3">
@@ -89,6 +90,7 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
             </label>
             </div>
           </details>
+          )}
 
           <div className="mt-auto flex items-end justify-between gap-3 pt-1">
             <div>
