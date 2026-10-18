@@ -2,3 +2,4 @@
 - [x] Optimize catalog and product selection for smartphones.
 - [x] Add cart and brief customer form with grouped WhatsApp message.
 - [x] Test pricing, order details and complete mobile ordering flow.
+- [x] Apply the orders table migration so placed orders are stored for admin follow-up.
