@@ -110,7 +110,7 @@ function Index() {
           </Link>
           <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-200 lg:flex" aria-label="Navegação principal">
             <a className="nav-link nav-link-active" href="#inicio">Início</a>
-            <a className="nav-link" href="#catalogo">Serviço/produto</a>
+            <a className="nav-link" href="#catalogo">Serviços/Produtos</a>
             <a className="nav-link" href="#diferenciais">Sobre nós</a>
             <a className="nav-link" href="#contato">Contato</a>
           </nav>
@@ -133,7 +133,7 @@ function Index() {
           <div className="border-t border-white/10 bg-[#070d22] px-4 py-3 lg:hidden">
             <nav className="mx-auto flex max-w-7xl flex-wrap gap-2" aria-label="Menu móvel">
               <a href="#inicio" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Início</a>
-              <a href="#catalogo" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Serviço/produto</a>
+              <a href="#catalogo" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Serviços/Produtos</a>
               <a href="#diferenciais" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Sobre nós</a>
               <a href="#contato" onClick={() => setMobileMenuOpen(false)} className="inline-flex h-10 items-center rounded-full border border-white/20 px-4 text-sm font-semibold text-white">Contato</a>
             </nav>
