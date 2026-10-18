@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, ShoppingBag, Menu, X, Search, ArrowRight, BadgeCheck, Zap, Headset, ChevronLeft, ChevronRight } from "lucide-react";
+import { MessageCircle, ShoppingBag, Menu, X, Search, ArrowRight, BadgeCheck, Zap, Headset, ChevronLeft, ChevronRight, Mail, Send } from "lucide-react";
 import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ function Index() {
   const matchesSearch = (p: Product) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
   const serviceItems = visible.filter((p) => p.showcase === "servicos" && matchesSearch(p));
   const productItems = visible.filter((p) => p.showcase === "produtos" && matchesSearch(p));
-  const phone = settings.whatsapp.replace(/\D/g, "");
+  const phone = "5582996926540";
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartReady, setCartReady] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -44,6 +44,14 @@ function Index() {
   const items = resolveCart(cart, products);
   const { total, count, hasQuote } = orderTotals(items);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const contactEmailAddress = "printcentermaceio@gmail.com";
+  const contactWhatsApp = "5582996926540";
+  const contactText = "Olá, Print Center!\n\nNome: " + (contactName.trim() || "Não informado") + "\nE-mail: " + (contactEmail.trim() || "Não informado") + "\n\nMensagem: " + (contactMessage.trim() || "Gostaria de tirar uma dúvida.");
+  const whatsappContactUrl = "https://wa.me/" + contactWhatsApp + "?text=" + encodeURIComponent(contactText);
+  const emailContactUrl = "mailto:" + contactEmailAddress + "?subject=" + encodeURIComponent("Contato pelo site - Print Center") + "&body=" + encodeURIComponent(contactText);
 
   useEffect(() => {
     try {
@@ -207,7 +215,42 @@ function Index() {
         </section>
       </main>
 
-      <footer id="contato" className="border-t border-white/10 bg-[#070d22]">
+      <section id="contato" className="border-t border-white/10 bg-gradient-to-b from-[#11182d] to-[#070d22] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+          <div>
+            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Estamos aqui para ajudar</p>
+            <h2 className="text-3xl font-extrabold leading-tight text-white sm:text-4xl">Fale com a Print Center</h2>
+            <p className="mt-3 max-w-lg text-base leading-relaxed text-slate-300">Tem dúvidas sobre um produto, prazo, arte ou orçamento? Envie sua mensagem pelo canal que preferir. É rápido e fácil.</p>
+            <div className="mt-6 grid gap-3">
+              <a href={"mailto:" + contactEmailAddress} className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-[#070d22]/65 p-4 transition hover:border-cyan/40 hover:bg-[#070d22]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan/10 text-cyan"><Mail className="h-5 w-5" /></span>
+                <span className="min-w-0"><span className="block text-xs font-semibold text-slate-400">E-mail de atendimento</span><span className="block break-all text-sm font-bold text-white sm:text-base">{contactEmailAddress}</span></span>
+              </a>
+              <a href={whatsappContactUrl} target="_blank" rel="noopener noreferrer" className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-[#070d22]/65 p-4 transition hover:border-magenta/50 hover:bg-[#070d22]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-magenta/10 text-pink-300"><MessageCircle className="h-5 w-5" /></span>
+                <span className="min-w-0"><span className="block text-xs font-semibold text-slate-400">WhatsApp</span><span className="block text-sm font-bold text-white sm:text-base">(82) 99692-6540</span></span>
+                <ArrowRight className="ml-auto h-4 w-4 shrink-0 text-slate-400" />
+              </a>
+            </div>
+          </div>
+          <div className="rounded-3xl border border-white/10 bg-[#070d22]/80 p-5 shadow-card sm:p-7">
+            <h3 className="text-xl font-bold text-white">Envie sua mensagem</h3>
+            <p className="mt-1 text-sm text-slate-400">Preencha os campos e escolha como quer enviar.</p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-1.5 text-sm font-semibold text-slate-200">Seu nome <input value={contactName} onChange={(event) => setContactName(event.target.value)} maxLength={100} placeholder="Como podemos chamar você?" className="h-12 min-w-0 rounded-xl border border-white/15 bg-[#11182d] px-3 font-normal text-white outline-none transition placeholder:text-slate-500 focus:border-cyan focus:ring-2 focus:ring-cyan/20" /></label>
+              <label className="grid gap-1.5 text-sm font-semibold text-slate-200">Seu e-mail (opcional) <input type="email" value={contactEmail} onChange={(event) => setContactEmail(event.target.value)} maxLength={254} placeholder="voce@exemplo.com" className="h-12 min-w-0 rounded-xl border border-white/15 bg-[#11182d] px-3 font-normal text-white outline-none transition placeholder:text-slate-500 focus:border-cyan focus:ring-2 focus:ring-cyan/20" /></label>
+              <label className="grid gap-1.5 text-sm font-semibold text-slate-200 sm:col-span-2">Como podemos ajudar? <textarea value={contactMessage} onChange={(event) => setContactMessage(event.target.value)} maxLength={2000} rows={4} placeholder="Ex.: Gostaria de saber o prazo para produzir 500 cartões de visita." className="min-w-0 resize-y rounded-xl border border-white/15 bg-[#11182d] px-3 py-3 font-normal text-white outline-none transition placeholder:text-slate-500 focus:border-cyan focus:ring-2 focus:ring-cyan/20" /></label>
+            </div>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <a href={whatsappContactUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-magenta px-4 py-3 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:brightness-110"><MessageCircle className="h-4 w-4" /> Enviar pelo WhatsApp</a>
+              <a href={emailContactUrl} className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-sm font-extrabold text-white transition hover:border-cyan/50 hover:bg-white/5"><Send className="h-4 w-4" /> Enviar por e-mail</a>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-500">O envio abre o WhatsApp ou o aplicativo de e-mail do seu dispositivo para você revisar e enviar a mensagem.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-white/10 bg-[#070d22]">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-7 text-sm text-slate-300 sm:flex-row sm:px-6 lg:px-8">
           <span>© {new Date().getFullYear()} Print Center · Impressão que destaca sua marca.</span>
           <div className="flex items-center gap-4"><a href={phone ? "https://wa.me/" + phone : "#catalogo"} target={phone ? "_blank" : undefined} rel="noopener noreferrer" className="font-semibold text-white hover:text-cyan">Fale conosco</a><Link to="/admin" className="text-slate-300 hover:text-white">Área do administrador</Link></div>
