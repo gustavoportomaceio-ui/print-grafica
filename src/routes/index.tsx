@@ -125,7 +125,7 @@ function Index() {
 
       <section id="inicio" className="hero-section relative isolate overflow-hidden bg-ink text-ink-foreground">
         <div className="hero-image absolute inset-y-0 right-0 w-full md:w-[57%]">
-          <img src="/images/banner.jpg" alt="Materiais gráficos impressos" className="h-full w-full object-cover object-center" />
+          <img src="/images/print_center_banner_com_logo_svg_original.png" alt="Banner da Print Center com materiais gráficos e brindes personalizados" className="h-full w-full object-cover object-center" />
         </div>
         <div className="hero-shade absolute inset-0" />
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 px-5 py-12 sm:px-6 md:min-h-[430px] md:grid-cols-[0.95fr_1.05fr] md:py-14 lg:px-8">
