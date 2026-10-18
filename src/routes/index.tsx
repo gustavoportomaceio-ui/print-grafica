@@ -84,7 +84,7 @@ function Index() {
       <header className="site-header sticky top-0 z-20 border-b border-white/10 bg-[#070d22]/95 text-white backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
           <Link to="/" aria-label="Print Center - início" className="flex shrink-0 items-center">
-            <img src="/images/print-center-logo.svg" alt="Print Center" className="site-logo h-14 w-auto max-w-[190px] object-contain sm:h-[4.5rem] sm:max-w-[220px]" />
+            <img src="/images/a481ab0a-1126-4cba-8580-d3f037956c93%20-%20Copia.jpeg" alt="Print Center" className="site-logo h-[4.5rem] w-auto max-w-[124px] object-contain sm:h-20 sm:max-w-[138px]" />
           </Link>
           <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-200 lg:flex" aria-label="Navegação principal">
             <a className="nav-link nav-link-active" href="#inicio">Início</a>
@@ -136,7 +136,7 @@ function Index() {
             </h1>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-white/80 sm:text-lg">Materiais gráficos de alta qualidade para destacar sua empresa em cada detalhe.</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#catalogo" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-cyan px-5 py-3 text-sm font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-105 sm:px-6">
+              <a href="#catalogo" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-yellow px-5 py-3 text-sm font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-105 sm:px-6">
                 <ShoppingBag className="h-5 w-5" /> Explorar produtos <ArrowRight className="h-4 w-4" />
               </a>
               <a href={phone ? "https://wa.me/" + phone : "#contato"} target={phone ? "_blank" : undefined} rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl border border-white/75 bg-ink/35 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10 sm:px-6">
@@ -170,7 +170,7 @@ function Index() {
 
         <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
           {categories.map((c) => (
-            <Button key={c} onClick={() => setCat(c)} variant="outline" aria-pressed={cat === c} className={"h-10 shrink-0 rounded-full border px-5 text-sm font-semibold transition " + (cat === c ? "border-cyan bg-cyan text-ink hover:bg-cyan/90 hover:text-ink" : "border-white/15 bg-[#11182d] text-slate-200 hover:border-cyan hover:bg-[#18223b] hover:text-white")}>
+            <Button key={c} onClick={() => setCat(c)} variant="outline" aria-pressed={cat === c} className={"h-10 shrink-0 rounded-full border px-5 text-sm font-semibold transition " + (cat === c ? "border-yellow bg-yellow text-ink hover:bg-yellow/90 hover:text-ink" : "border-white/15 bg-[#11182d] text-slate-200 hover:border-cyan hover:bg-[#18223b] hover:text-white")}>
               {c}
             </Button>
           ))}
