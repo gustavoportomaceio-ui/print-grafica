@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { Plus, Trash2, Save, LogOut, ImagePlus, X, Copy } from "lucide-react";
+import { Plus, Trash2, Save, LogOut, ImagePlus, X, Copy, GripVertical } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { productsQuery, settingsQuery, type Product, type ProductOption } from "@/lib/catalog";
 import { AdminOrders } from "@/components/AdminOrders";
@@ -109,6 +109,25 @@ function Dashboard() {
   const qc = useQueryClient();
   const { data: products = [] } = useQuery(productsQuery);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [draggedProductId, setDraggedProductId] = useState<string | null>(null);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  async function reorderProducts(targetId: string) {
+    if (!draggedProductId || draggedProductId === targetId || savingOrder) return;
+    const reordered = [...products];
+    const from = reordered.findIndex((p) => p.id === draggedProductId);
+    const to = reordered.findIndex((p) => p.id === targetId);
+    if (from < 0 || to < 0) return;
+    const moved = reordered.splice(from, 1)[0];
+    reordered.splice(to, 0, moved);
+    setSavingOrder(true);
+    const results = await Promise.all(reordered.map((p, index) => supabase.from("products").update({ sort_order: index + 1 }).eq("id", p.id)));
+    setSavingOrder(false);
+    setDraggedProductId(null);
+    const failed = results.find((result) => result.error);
+    if (failed?.error) alert("Não foi possível salvar a nova ordem: " + failed.error.message);
+    await qc.invalidateQueries({ queryKey: ["products"] });
+  }
 
   const blank: Product = {
     id: "", name: "", category: "Outros", showcase: "produtos", description: "", image_url: null, base_price: 0,
@@ -133,14 +152,32 @@ function Dashboard() {
         <SettingsForm />
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold">Produtos</h2>
+            <div>
+              <h2 className="text-xl font-bold">Produtos</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Arraste pelo ícone de alça para organizar a ordem no catálogo.{savingOrder ? " Salvando ordem…" : ""}</p>
+            </div>
             <button className={`${btn} bg-primary text-primary-foreground`} onClick={() => setEditing(blank)}>
               <Plus className="h-4 w-4" /> Novo produto
             </button>
           </div>
           <div className="divide-y rounded-2xl border bg-card">
             {products.map((p) => (
-              <div key={p.id} className="flex items-center gap-2 p-3 hover:bg-muted">
+              <div
+                key={p.id}
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={(event) => { event.preventDefault(); void reorderProducts(p.id); }}
+                className={"flex items-center gap-2 p-3 hover:bg-muted " + (draggedProductId === p.id ? "opacity-40" : "")}
+              >
+                <button
+                  type="button"
+                  draggable
+                  title={"Arrastar para reordenar " + p.name}
+                  aria-label={"Arrastar para reordenar " + p.name}
+                  onDragStart={(event) => { setDraggedProductId(p.id); event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", p.id); }}
+                  onDragEnd={() => setDraggedProductId(null)}
+                  disabled={savingOrder}
+                  className={btn + " h-10 shrink-0 cursor-grab border px-2 active:cursor-grabbing"}
+                ><GripVertical className="h-5 w-5" /></button>
                 <button onClick={() => setEditing(p)} className="flex min-w-0 flex-1 items-center gap-4 text-left">
                   <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
                     {p.image_url && <img src={p.image_url} alt="" className="h-full w-full object-cover" />}
