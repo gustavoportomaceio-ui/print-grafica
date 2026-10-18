@@ -34,8 +34,6 @@ function Index() {
   const visible = products.filter((p) => p.active);
   const [search, setSearch] = useState("");
   const matchesSearch = (p: Product) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
-  const serviceItems = visible.filter((p) => p.showcase === "servicos" && matchesSearch(p));
-  const productItems = visible.filter((p) => p.showcase === "produtos" && matchesSearch(p));
   const featuredItems = visible.filter((p) => p.featured && matchesSearch(p));
   const phone = "5582996926540";
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -92,7 +90,7 @@ function Index() {
     el.scrollBy({ left: distance * direction, behavior: "smooth" });
   };
   const carouselCardClass = "min-w-0";
-  const catalogItems = [...serviceItems, ...productItems];
+  const catalogItems = visible.filter(matchesSearch);
   const scrollCatalog = (direction: -1 | 1) => {
     const el = window.matchMedia("(min-width: 1280px)").matches
       ? desktopCatalogCarouselRef.current
