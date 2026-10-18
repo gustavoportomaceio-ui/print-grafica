@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageCircle, ShoppingBag, Menu, X, Search, ArrowRight, BadgeCheck, Zap, Headset, ChevronLeft, ChevronRight } from "lucide-react";
 import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
@@ -32,14 +32,7 @@ function Index() {
   const { data: products } = useSuspenseQuery(productsQuery);
   const { data: settings } = useSuspenseQuery(settingsQuery);
   const visible = products.filter((p) => p.active);
-  const categories = useMemo(
-    () => ["Todos", ...Array.from(new Set(visible.map((p) => p.category)))],
-    [visible],
-  );
-  const [cat, setCat] = useState("Todos");
   const [search, setSearch] = useState("");
-  const filtered = cat === "Todos" ? visible : visible.filter((p) => p.category === cat);
-  const list = filtered.filter((p) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR")));
   const matchesSearch = (p: Product) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
   const isService = (p: Product) => {
     const explicit = p.category.trim().toLocaleLowerCase("pt-BR");
@@ -89,7 +82,7 @@ function Index() {
 
   const serviceCarouselRef = useRef<HTMLDivElement>(null);
   const productCarouselRef = useRef<HTMLDivElement>(null);
-  const scrollCarousel = (ref: React.RefObject<HTMLDivElement | null>, direction: -1 | 1) => {
+  const scrollCarousel = (ref: { current: HTMLDivElement | null }, direction: -1 | 1) => {
     const el = ref.current;
     if (!el) return;
     const firstCard = el.querySelector<HTMLElement>("[data-carousel-card]");
