@@ -326,11 +326,8 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Nome"><input className={input} value={p.name} onChange={(e) => setP({ ...p, name: e.target.value })} /></Field>
             <Field label="Categoria do item"><input className={input} value={p.category} onChange={(e) => setP({ ...p, category: e.target.value })} placeholder="Ex.: Cartões, Copos, Chaveiros" /></Field>
-            <Field label="Exibir na vitrine">
-              <select className={input} value={p.showcase} onChange={(e) => setP({ ...p, showcase: e.target.value as Product["showcase"] })}>
-                <option value="servicos">Serviços</option>
-                <option value="produtos">Produtos</option>
-              </select>
+            <Field label="Seção do catálogo">
+              <div className={`${input} flex min-h-10 items-center`}>Serviço/produto</div>
             </Field>
           </div>
           <Field label="Descrição">
