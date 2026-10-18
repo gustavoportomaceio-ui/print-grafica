@@ -83,6 +83,7 @@ function Index() {
 
   const featuredCarouselRef = useRef<HTMLDivElement>(null);
   const catalogCarouselRef = useRef<HTMLDivElement>(null);
+  const desktopCatalogCarouselRef = useRef<HTMLDivElement>(null);
   const scrollCarousel = (ref: { current: HTMLDivElement | null }, direction: -1 | 1) => {
     const el = ref.current;
     if (!el) return;
@@ -93,7 +94,9 @@ function Index() {
   const carouselCardClass = "min-w-0";
   const catalogItems = [...serviceItems, ...productItems];
   const scrollCatalog = (direction: -1 | 1) => {
-    const el = catalogCarouselRef.current;
+    const el = window.matchMedia("(min-width: 1280px)").matches
+      ? desktopCatalogCarouselRef.current
+      : catalogCarouselRef.current;
     if (el) el.scrollBy({ left: el.clientWidth * direction, behavior: "smooth" });
   };
 
@@ -226,7 +229,7 @@ function Index() {
                   </div>
                 ))}
               </div>
-              <div className="hidden snap-x snap-mandatory grid-flow-col grid-rows-2 auto-cols-[calc(25%-0.75rem)] gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto xl:grid">
+              <div ref={desktopCatalogCarouselRef} className="hidden snap-x snap-mandatory grid-flow-col grid-rows-2 auto-cols-[calc(25%-0.75rem)] gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto xl:grid">
                 {catalogItems.map((p) => (
                   <div key={p.id} data-catalog-item className={`min-w-0 snap-start ${carouselCardClass}`}>
                     <ProductCard product={p} onAdd={addItem} />
