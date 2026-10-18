@@ -16,40 +16,40 @@ export type Database = {
     Tables: {
       orders: {
         Row: {
-          id: string
           created_at: string
           customer_name: string
           customer_whatsapp: string
           delivery_address: string
-          payment_method: string
-          items: Json
-          total: number
           has_quote: boolean
+          id: string
+          items: Json
+          payment_method: string
           status: string
+          total: number
         }
         Insert: {
-          id?: string
           created_at?: string
           customer_name: string
           customer_whatsapp: string
           delivery_address: string
-          payment_method: string
-          items: Json
-          total?: number
           has_quote?: boolean
+          id?: string
+          items: Json
+          payment_method: string
           status?: string
+          total?: number
         }
         Update: {
-          id?: string
           created_at?: string
           customer_name?: string
           customer_whatsapp?: string
           delivery_address?: string
-          payment_method?: string
-          items?: Json
-          total?: number
           has_quote?: boolean
+          id?: string
+          items?: Json
+          payment_method?: string
           status?: string
+          total?: number
         }
         Relationships: []
       }
