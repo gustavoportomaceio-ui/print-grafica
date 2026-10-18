@@ -312,8 +312,8 @@ function Index() {
       </footer>
 
       {cartError && <p role="alert" className="px-4 text-center text-sm text-destructive">{cartError}</p>}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-[#070d22]/95 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 text-white shadow-card backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <div className="fixed bottom-0 left-0 right-0 z-30 box-border w-full max-w-full overflow-hidden border-t border-white/10 bg-[#070d22]/95 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 text-white shadow-card backdrop-blur">
+        <div className="mx-auto flex w-full min-w-0 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <div className="min-w-0"><p className="text-xs text-slate-300">{count} {count === 1 ? "item" : "itens"}{hasQuote ? " · + sob consulta" : ""}</p><p className="font-display text-lg font-extrabold text-white">{brl(total)}</p></div>
           <Button className="h-12 rounded-xl px-5 text-sm font-extrabold" onClick={() => setCartOpen(true)}><ShoppingBag className="h-4 w-4" /> {count ? "Ver pedido" : "Ver carrinho"}</Button>
         </div>
