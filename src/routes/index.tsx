@@ -172,7 +172,7 @@ function Index() {
             <div className="mb-5 flex items-end justify-between gap-3">
               <div>
                 <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Seleção especial Print Center</p>
-                <h2 className="text-2xl font-extrabold leading-tight text-white sm:text-3xl">{settings.tagline?.trim() || "Volta às aulas"}</h2>
+                <h2 className="text-2xl font-extrabold leading-tight text-white sm:text-3xl">{(!settings.tagline?.trim() || settings.tagline.trim() === "Impressão de qualidade, entrega rápida.") ? "Tudo o que você precisa para o volta às aulas do seu filho(a)!" : settings.tagline.trim()}</h2>
                 <p className="mt-2 text-sm text-slate-300">Confira nossos produtos em destaque.</p>
               </div>
               <div className="flex shrink-0 gap-2">
