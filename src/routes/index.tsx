@@ -175,11 +175,11 @@ function Index() {
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Impressão profissional</p>
               <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl">Serviços</h2>
-              <p className="mt-1 text-sm text-slate-300">Impressos e soluções gráficas para sua empresa.</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2"><p className="text-sm text-slate-300">Impressos e soluções gráficas para sua empresa.</p><span className="rounded-full border border-cyan/20 bg-cyan/10 px-2.5 py-1 text-xs font-bold text-cyan">{serviceItems.length} {serviceItems.length === 1 ? "serviço" : "serviços"}</span></div>
             </div>
             <div className="flex shrink-0 gap-2">
-              <Button variant="outline" aria-label="Serviços anteriores" onClick={() => scrollCarousel(serviceCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronLeft className="h-5 w-5" /></Button>
-              <Button variant="outline" aria-label="Próximos serviços" onClick={() => scrollCarousel(serviceCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronRight className="h-5 w-5" /></Button>
+              <Button variant="outline" aria-label="Serviços anteriores" onClick={() => scrollCarousel(serviceCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
+              <Button variant="outline" aria-label="Próximos serviços" onClick={() => scrollCarousel(serviceCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
             </div>
           </div>
           <div ref={serviceCarouselRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -193,11 +193,11 @@ function Index() {
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Brindes e materiais</p>
               <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl">Produtos</h2>
-              <p className="mt-1 text-sm text-slate-300">Produtos personalizados para divulgar sua marca.</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2"><p className="text-sm text-slate-300">Produtos personalizados para divulgar sua marca.</p><span className="rounded-full border border-magenta/25 bg-magenta/10 px-2.5 py-1 text-xs font-bold text-pink-300">{productItems.length} {productItems.length === 1 ? "produto" : "produtos"}</span></div>
             </div>
             <div className="flex shrink-0 gap-2">
-              <Button variant="outline" aria-label="Produtos anteriores" onClick={() => scrollCarousel(productCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronLeft className="h-5 w-5" /></Button>
-              <Button variant="outline" aria-label="Próximos produtos" onClick={() => scrollCarousel(productCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white hover:bg-[#18223b]"><ChevronRight className="h-5 w-5" /></Button>
+              <Button variant="outline" aria-label="Produtos anteriores" onClick={() => scrollCarousel(productCarouselRef, -1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
+              <Button variant="outline" aria-label="Próximos produtos" onClick={() => scrollCarousel(productCarouselRef, 1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
             </div>
           </div>
           <div ref={productCarouselRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
