@@ -351,7 +351,13 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
                         <div key={k} className="mb-2 flex gap-2">
                           <input className={input} placeholder="Escolha" value={choice.label} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, label: e.target.value } : x)) })} />
                           {hasPrice && (
-                            <input type="number" step="0.01" title="Acréscimo em R$" className={`${input} w-28`} value={choice.price} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, price: Number(e.target.value) } : x)) })} />
+                            <div className="flex w-40 shrink-0 flex-col gap-1">
+                              <select aria-label={`Tipo de preço para ${choice.label || "escolha"}`} className={input} value={choice.price === "quote" ? "quote" : "price"} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, price: e.target.value === "quote" ? "quote" : 0 } : x)) })}>
+                                <option value="price">Acréscimo (R$)</option>
+                                <option value="quote">A consultar</option>
+                              </select>
+                              {choice.price !== "quote" && <input type="number" step="0.01" title="Acréscimo em R$" aria-label="Acréscimo em reais" className={input} value={choice.price} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, price: Number(e.target.value) } : x)) })} />}
+                            </div>
                           )}
                           <button className="px-2 text-muted-foreground" onClick={() => setOpt(i, { ...o, choices: o.choices.filter((_, m) => m !== k) })}><X className="h-4 w-4" /></button>
                         </div>

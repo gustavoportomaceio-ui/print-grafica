@@ -70,7 +70,7 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
                   {o.choices.map((c, i) => (
                     <option key={i} value={i}>
                       {c.label}
-                      {product.base_price !== null && Number(c.price) > 0 ? ` (+${brl(Number(c.price))})` : ""}
+                      {c.price === "quote" ? " (A consultar)" : product.base_price !== null && Number(c.price) > 0 ? ` (+${brl(Number(c.price))})` : ""}
                     </option>
                   ))}
                 </select>

@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type Choice = { label: string; price: number };
+export type Choice = { label: string; price: number | "quote" };
 export type ProductOption = { name: string; choices: Choice[] };
 export type Product = {
   id: string;
@@ -50,10 +50,9 @@ export const brl = (v: number) =>
 
 export function calcPrice(p: Product, selected: Record<string, number>) {
   if (p.base_price === null) return null;
-  return p.options.reduce(
-    (sum, o) => sum + (Number(o.choices[selected[o.name] ?? 0]?.price) || 0),
-    p.base_price,
-  );
+  const choices = p.options.map((o) => o.choices[selected[o.name] ?? 0]);
+  if (choices.some((choice) => choice?.price === "quote")) return null;
+  return choices.reduce((sum, choice) => sum + (Number(choice?.price) || 0), p.base_price);
 }
 
 export function whatsappLink(

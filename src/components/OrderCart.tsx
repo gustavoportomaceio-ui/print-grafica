@@ -89,7 +89,7 @@ export function OrderCart({ open, onOpenChange, items, settings, onChange, onRem
                   <label key={`${item.id}-${option.name}`} className="grid gap-1.5 text-sm">
                     <span className="font-medium text-muted-foreground">{option.name}</span>
                     <select value={item.selected[option.name] ?? 0} onChange={(event) => onChange(item.id, { selected: { ...item.selected, [option.name]: Number(event.target.value) } })} className="h-11 rounded-md border border-input bg-background px-3 text-sm">
-                      {option.choices.map((choice, index) => <option key={`${item.id}-${option.name}-${index}`} value={index}>{choice.label}{price !== null && Number(choice.price) > 0 ? ` (+${brl(Number(choice.price))})` : ""}</option>)}
+                      {option.choices.map((choice, index) => <option key={`${item.id}-${option.name}-${index}`} value={index}>{choice.label}{choice.price === "quote" ? " (A consultar)" : price !== null && Number(choice.price) > 0 ? ` (+${brl(Number(choice.price))})` : ""}</option>)}
                     </select>
                   </label>
                 ))}</div></details>
