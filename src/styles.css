@@ -128,11 +128,18 @@
 
 /* Keep the document viewport fixed horizontally on mobile. Individual carousels retain their own horizontal scrolling. */
 @layer base {
-  html, body {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  html {
+    width: 100%;
     max-width: 100%;
-    overflow-x: clip;
+    overflow-x: hidden;
   }
   body {
     width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
   }
 }
