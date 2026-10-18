@@ -126,21 +126,6 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
             </DialogContent>
           </Dialog>
 
-          <div className="mt-auto flex items-end justify-between gap-3 pt-1">
-            <div>
-              <div className="text-xs font-medium text-slate-400">{price !== null ? "Valor por pedido" : "Preço"}</div>
-              <div className="break-words font-display text-2xl font-extrabold text-white">
-                {price !== null ? brl(price) : product.price_note || "Sob consulta"}
-              </div>
-            </div>
-          </div>
-          <Button
-            onClick={() => { if (onAdd(product, sel, notes)) setAdded(true); }}
-            className="h-12 w-full text-base font-bold"
-          >
-            {added ? <Check /> : <Plus />} {added ? "Adicionar mais um" : "Adicionar ao carrinho"}
-          </Button>
-          <span className="sr-only" aria-live="polite">{added ? `${product.name} adicionado ao carrinho.` : ""}</span>
         </div>
       </article>
 
