@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      orders: {
+        Row: {
+          created_at: string
+          customer_name: string
+          customer_whatsapp: string
+          delivery_address: string
+          has_quote: boolean
+          id: string
+          items: Json
+          payment_method: string
+          status: string
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          customer_name: string
+          customer_whatsapp: string
+          delivery_address: string
+          has_quote?: boolean
+          id?: string
+          items: Json
+          payment_method: string
+          status?: string
+          total?: number
+        }
+        Update: {
+          created_at?: string
+          customer_name?: string
+          customer_whatsapp?: string
+          delivery_address?: string
+          has_quote?: boolean
+          id?: string
+          items?: Json
+          payment_method?: string
+          status?: string
+          total?: number
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           active: boolean
