@@ -124,3 +124,15 @@
   .hero-shade { background: linear-gradient(180deg, #070d22 0%, rgb(7 13 34 / 96%) 58%, rgb(7 13 34 / 65%) 100%); }
   .hero-copy { position: relative; z-index: 1; }
 }
+
+
+/* Keep the document viewport fixed horizontally on mobile. Individual carousels retain their own horizontal scrolling. */
+@layer base {
+  html, body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  body {
+    width: 100%;
+  }
+}
