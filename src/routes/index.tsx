@@ -177,7 +177,7 @@ function Index() {
             <div className="mb-5 flex items-end justify-between gap-3">
               <div>
                 <p className="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-cyan">Seleção especial Print Center</p>
-                <h2 className="text-3xl font-black leading-tight text-magenta sm:text-4xl">Confira aqui nossos destaques!</h2>
+                <h2 className="text-3xl font-black leading-tight text-yellow-400 sm:text-4xl">Confira aqui nossos destaques!</h2>
                 <p className="mt-2 text-sm text-slate-300">Tudo o que você precisa para o volta às aulas do seu filho(a)!</p>
               </div>
               <div className="flex shrink-0 gap-2">
