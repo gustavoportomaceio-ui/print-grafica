@@ -218,13 +218,22 @@ function Index() {
             )}
           </div>
           {catalogItems.length > 0 ? (
-            <div ref={catalogCarouselRef} className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto sm:gap-4">
-              {catalogItems.map((p) => (
-                <div key={p.id} data-carousel-card data-catalog-item className={`w-full shrink-0 snap-start sm:w-[calc(50%-0.5rem)] xl:w-[calc(25%-0.75rem)] ${carouselCardClass}`}>
-                  <ProductCard product={p} onAdd={addItem} />
-                </div>
-              ))}
-            </div>
+            <>
+              <div ref={catalogCarouselRef} className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto sm:gap-4 xl:hidden">
+                {catalogItems.map((p) => (
+                  <div key={p.id} data-carousel-card data-catalog-item className={`w-full shrink-0 snap-start sm:w-[calc(50%-0.5rem)] ${carouselCardClass}`}>
+                    <ProductCard product={p} onAdd={addItem} />
+                  </div>
+                ))}
+              </div>
+              <div className="hidden snap-x snap-mandatory grid-flow-col grid-rows-2 auto-cols-[calc(25%-0.75rem)] gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto xl:grid">
+                {catalogItems.map((p) => (
+                  <div key={p.id} data-catalog-item className={`min-w-0 snap-start ${carouselCardClass}`}>
+                    <ProductCard product={p} onAdd={addItem} />
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             <p className="rounded-xl border border-white/10 bg-[#11182d] px-5 py-8 text-sm text-slate-300">Nenhum serviço ou produto cadastrado nesta seção ainda.</p>
           )}
