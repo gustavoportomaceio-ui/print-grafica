@@ -30,7 +30,7 @@ export function resolveCart(cart: CartItem[], products: Product[]): OrderItem[] 
 export function orderTotals(items: OrderItem[]) {
   return {
     total: items.reduce((sum, item) => sum + (calcPrice(item.product, item.selected) ?? 0) * item.quantity, 0),
-    hasQuote: items.some((item) => item.product.base_price === null),
+    hasQuote: items.some((item) => calcPrice(item.product, item.selected) === null),
     count: items.reduce((sum, item) => sum + item.quantity, 0),
   };
 }
