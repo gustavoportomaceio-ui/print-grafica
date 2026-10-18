@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronDown, Image as ImageIcon, Plus, ZoomIn } from "lucide-react";
+import { Check, ChevronDown, Image as ImageIcon, Plus, ZoomIn, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -10,11 +10,12 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
   const [notes, setNotes] = useState("");
   const [added, setAdded] = useState(false);
   const [imageOpen, setImageOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const price = calcPrice(product, sel);
 
   return (
     <>
-      <article className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#11182d] shadow-card transition duration-300 hover:-translate-y-1 hover:border-cyan/40 hover:shadow-[0_18px_45px_-24px_rgba(8,196,233,0.55)]">
+      <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#11182d] shadow-card transition duration-300 hover:-translate-y-1 hover:border-cyan/40 hover:shadow-[0_18px_45px_-24px_rgba(8,196,233,0.55)]">
         <div className="relative aspect-square overflow-hidden bg-[#18223b]">
           {product.image_url && (
             <button
@@ -53,57 +54,78 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
             <p className="mt-2 line-clamp-3 min-h-[3.75rem] text-sm leading-relaxed text-slate-300">{product.description}</p>
           </div>
 
-          {product.options.length > 0 && (
-            <div className="grid gap-3">
-              {product.options.map((o) => (
-                <label key={o.name} className="grid gap-1">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {o.name}
-                  </span>
-                  <select
-                    value={sel[o.name] ?? 0}
-                    onChange={(e) => { setSel({ ...sel, [o.name]: Number(e.target.value) }); setAdded(false); }}
-                    className="h-12 w-full min-w-0 rounded-md border border-input bg-background px-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    {o.choices.map((c, i) => (
-                      <option key={i} value={i}>
-                        {c.label}
-                        {c.price === "quote" ? " (A consultar)" : product.base_price !== null && Number(c.price) > 0 ? ` (+${brl(Number(c.price))})` : ""}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-              <label className="grid gap-1">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Observações (opcional)
-                </span>
-                <Input
-                  value={notes}
-                  maxLength={500}
-                  onChange={(e) => { setNotes(e.target.value); setAdded(false); }}
-                  placeholder="Ex.: já tenho a arte pronta"
-                  className="h-12 text-base"
-                />
-              </label>
-            </div>
-          )}
-
-          <div className="mt-auto flex items-end justify-between gap-3 pt-1">
-            <div>
-              <div className="text-xs font-medium text-slate-400">{price !== null ? "Valor por pedido" : "Preço"}</div>
-              <div className="break-words font-display text-2xl font-extrabold text-white">
-                {price !== null ? brl(price) : product.price_note || "Sob consulta"}
+          <div className="mt-auto">
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <div className="min-w-0">
+                <div className="text-xs font-medium text-slate-400">{price !== null ? "Valor por pedido" : "Preço"}</div>
+                <div className="break-words font-display text-2xl font-extrabold text-white">
+                  {price !== null ? brl(price) : product.price_note || "Sob consulta"}
+                </div>
               </div>
+              {(product.options.length > 0 || product.description.trim().length > 0) && (
+                <Button type="button" variant="outline" onClick={() => setInfoOpen(true)} className="h-10 shrink-0 border-cyan/30 px-3 text-sm text-cyan hover:bg-cyan/10">
+                  <Info className="h-4 w-4" /> + Info
+                </Button>
+              )}
             </div>
+            <Button
+              onClick={() => { if (onAdd(product, sel, notes)) setAdded(true); }}
+              className="mt-3 h-12 w-full text-base font-bold"
+            >
+              {added ? <Check /> : <Plus />} {added ? "Adicionar mais um" : "Adicionar ao carrinho"}
+            </Button>
           </div>
-          <Button
-            onClick={() => { if (onAdd(product, sel, notes)) setAdded(true); }}
-            className="h-12 w-full text-base font-bold"
-          >
-            {added ? <Check /> : <Plus />} {added ? "Adicionar mais um" : "Adicionar ao carrinho"}
-          </Button>
           <span className="sr-only" aria-live="polite">{added ? `${product.name} adicionado ao carrinho.` : ""}</span>
+
+          <Dialog open={infoOpen} onOpenChange={setInfoOpen}>
+            <DialogContent className="w-[calc(100vw-2rem)] max-w-lg border-white/10 bg-[#070d22] p-5 text-white">
+              <DialogTitle className="pr-8 text-xl font-bold">{product.name}</DialogTitle>
+              <div className="max-h-[65vh] space-y-4 overflow-y-auto">
+                {product.description.trim() && (
+                  <div>
+                    <h3 className="text-sm font-bold text-cyan">Informações do produto</h3>
+                    <p className="mt-1 whitespace-pre-line break-words text-sm leading-relaxed text-slate-300">{product.description}</p>
+                  </div>
+                )}
+                {product.options.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-bold text-cyan">Escolha as opções</h3>
+                    {product.options.map((o) => (
+                      <label key={o.name} className="grid gap-1.5">
+                        <span className="text-xs font-semibold uppercase tracking-wide text-slate-300">{o.name}</span>
+                        <select
+                          value={sel[o.name] ?? 0}
+                          onChange={(e) => { setSel({ ...sel, [o.name]: Number(e.target.value) }); setAdded(false); }}
+                          className="h-12 w-full min-w-0 rounded-md border border-input bg-background px-3 text-base font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                        >
+                          {o.choices.map((choice, i) => (
+                            <option key={i} value={i}>
+                              {choice.label}
+                              {choice.price === "quote" ? " (A consultar)" : product.base_price !== null && Number(choice.price) > 0 ? ` (+${brl(Number(choice.price))})` : ""}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
+                    <label className="grid gap-1.5">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-slate-300">Observações (opcional)</span>
+                      <Input value={notes} maxLength={500} onChange={(e) => { setNotes(e.target.value); setAdded(false); }} placeholder="Ex.: já tenho a arte pronta" className="h-12 text-base" />
+                    </label>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-4">
+                <div>
+                  <p className="text-xs text-slate-400">{price !== null ? "Valor por pedido" : "Preço"}</p>
+                  <p className="text-xl font-extrabold">{price !== null ? brl(price) : product.price_note || "Sob consulta"}</p>
+                </div>
+                <Button onClick={() => { if (onAdd(product, sel, notes)) { setAdded(true); setInfoOpen(false); } }} className="h-11 font-bold">
+                  {added ? <Check /> : <Plus />} Adicionar
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
         </div>
       </article>
 
