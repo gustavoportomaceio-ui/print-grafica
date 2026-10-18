@@ -36,7 +36,7 @@ function Index() {
   const matchesSearch = (p: Product) => (p.name + " " + p.description + " " + p.category).toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
   const serviceItems = visible.filter((p) => p.showcase === "servicos" && matchesSearch(p));
   const productItems = visible.filter((p) => p.showcase === "produtos" && matchesSearch(p));
-  const phone = settings.whatsapp.replace(/\D/g, "");
+  const phone = "5582996926540";
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartReady, setCartReady] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
