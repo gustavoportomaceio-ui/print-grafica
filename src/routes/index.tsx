@@ -72,10 +72,10 @@ function Index() {
     }
   }, [cart, cartReady]);
 
-  function addItem(product: Product, selected: Record<string, number>, notes: string) {
+  function addItem(product: Product, selected: Record<string, number>, notes: string, quantity: number) {
     if (cart.length >= 100) { setCartError("Carrinho cheio. Revise seus itens antes de adicionar mais."); return false; }
     setCartError("");
-    setCart((previous) => [...previous, { id: crypto.randomUUID(), productId: product.id, selected: { ...selected }, notes: notes.trim(), quantity: 1 }]);
+    setCart((previous) => [...previous, { id: crypto.randomUUID(), productId: product.id, selected: { ...selected }, notes: notes.trim(), quantity }]);
     return true;
   }
 
