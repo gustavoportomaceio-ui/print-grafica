@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Check, ChevronDown, Image as ImageIcon, Plus, ZoomIn, Info } from "lucide-react";
+import { Check, ChevronDown, Image as ImageIcon, Plus, Minus, ZoomIn, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { brl, calcPrice, type Product } from "@/lib/catalog";
 
-export function ProductCard({ product, onAdd }: { product: Product; onAdd: (product: Product, selected: Record<string, number>, notes: string) => boolean }) {
+export function ProductCard({ product, onAdd }: { product: Product; onAdd: (product: Product, selected: Record<string, number>, notes: string, quantity: number) => boolean }) {
   const [sel, setSel] = useState<Record<string, number>>({});
   const [notes, setNotes] = useState("");
   const [added, setAdded] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const [imageOpen, setImageOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const price = calcPrice(product, sel);
@@ -68,11 +69,19 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
                 </Button>
               )}
             </div>
+            <div className="mt-3 flex h-11 items-center justify-between rounded-xl border border-white/15 bg-[#070d22]/60 px-3">
+              <span className="text-sm font-semibold text-slate-300">Quantidade</span>
+              <div className="flex items-center gap-3">
+                <Button type="button" variant="outline" aria-label={`Diminuir quantidade de ${product.name}`} disabled={quantity <= 1} onClick={() => { setQuantity((q) => Math.max(1, q - 1)); setAdded(false); }} className="h-8 w-8 rounded-lg border-white/15 p-0 text-white"><Minus className="h-3.5 w-3.5" /></Button>
+                <span className="min-w-5 text-center text-sm font-bold text-white" aria-live="polite">{quantity}</span>
+                <Button type="button" variant="outline" aria-label={`Aumentar quantidade de ${product.name}`} disabled={quantity >= 99} onClick={() => { setQuantity((q) => Math.min(99, q + 1)); setAdded(false); }} className="h-8 w-8 rounded-lg border-white/15 p-0 text-white"><Plus className="h-3.5 w-3.5" /></Button>
+              </div>
+            </div>
             <Button
-              onClick={() => { if (onAdd(product, sel, notes)) setAdded(true); }}
+              onClick={() => { if (onAdd(product, sel, notes, quantity)) setAdded(true); }}
               className="mt-3 h-12 w-full text-base font-bold"
             >
-              {added ? <Check /> : <Plus />} {added ? "Adicionar mais um" : "Adicionar ao carrinho"}
+              {added ? <Check /> : <Plus />} {added ? "Adicionar mais" : "Adicionar ao carrinho"}
             </Button>
           </div>
           <span className="sr-only" aria-live="polite">{added ? `${product.name} adicionado ao carrinho.` : ""}</span>
@@ -119,7 +128,7 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
                   <p className="text-xs text-slate-400">{price !== null ? "Valor por pedido" : "Preço"}</p>
                   <p className="text-xl font-extrabold">{price !== null ? brl(price) : product.price_note || "Sob consulta"}</p>
                 </div>
-                <Button onClick={() => { if (onAdd(product, sel, notes)) { setAdded(true); setInfoOpen(false); } }} className="h-11 font-bold">
+                <Button onClick={() => { if (onAdd(product, sel, notes, quantity)) { setAdded(true); setInfoOpen(false); } }} className="h-11 font-bold">
                   {added ? <Check /> : <Plus />} Adicionar
                 </Button>
               </div>
