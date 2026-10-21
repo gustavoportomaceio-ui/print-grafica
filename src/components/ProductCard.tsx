@@ -133,14 +133,14 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
         </div>
       </article>
 
-      {product.image_url && (
+      {photos.length > 0 && (
         <Dialog open={imageOpen} onOpenChange={setImageOpen}>
           <DialogContent className="w-[calc(100vw-2rem)] max-w-6xl border-white/10 bg-[#070d22] p-3 text-white sm:p-5">
             <div className="grid max-h-[82vh] grid-cols-1 gap-4 overflow-y-auto md:grid-cols-[1.2fr_0.8fr] md:items-start">
               <div className="flex min-h-0 items-center justify-center rounded-lg bg-black/20 p-2">
                 <img
-                  src={product.image_url}
-                  alt={`Imagem ampliada de ${product.name}`}
+                  src={photos[activePhoto] ?? photos[0]}
+                  alt={`Imagem ampliada ${activePhoto + 1} de ${product.name}`}
                   className="max-h-[65vh] max-w-full object-contain"
                 />
               </div>
