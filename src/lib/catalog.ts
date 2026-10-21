@@ -10,6 +10,7 @@ export type Product = {
   showcase: "servicos" | "produtos";
   description: string;
   image_url: string | null;
+  image_urls: string[];
   base_price: number | null;
   price_note: string | null;
   options: ProductOption[];
@@ -32,6 +33,7 @@ export const productsQuery = queryOptions({
       ...p,
       base_price: p.base_price === null ? null : Number(p.base_price),
       options: (p.options as unknown as ProductOption[]) ?? [],
+      image_urls: Array.isArray(p.image_urls) && p.image_urls.length ? p.image_urls : p.image_url ? [p.image_url] : [],
     })) as Product[];
   },
 });
