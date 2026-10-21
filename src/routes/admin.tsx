@@ -130,7 +130,7 @@ function Dashboard() {
   }
 
   const blank: Product = {
-    id: "", name: "", category: "Outros", showcase: "produtos", description: "", image_url: null, base_price: 0,
+    id: "", name: "", category: "Outros", showcase: "produtos", description: "", image_url: null, image_urls: [], base_price: 0,
     price_note: "", options: [],
     featured: false, active: true, sort_order: products.length + 1,
   };
@@ -283,7 +283,7 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
     if (!p.name.trim()) return alert("Informe o nome do produto.");
     setBusy(true);
     const row = {
-      name: p.name, category: p.category, showcase: p.showcase, description: p.description, image_url: p.image_url,
+      name: p.name, category: p.category, showcase: p.showcase, description: p.description, image_url: p.image_urls[0] ?? p.image_url, image_urls: p.image_urls.slice(0, 5) as unknown as never,
       base_price: hasPrice ? Number(p.base_price) || 0 : null, price_note: p.price_note,
       options: (hasOptions ? p.options : []) as unknown as never, featured: p.featured, active: p.active, sort_order: p.sort_order,
     };
@@ -311,17 +311,39 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
         </div>
 
         <div className="grid gap-4">
-          <div className="flex items-center gap-4">
-            <div className="h-24 w-32 overflow-hidden rounded-lg bg-muted">
-              {p.image_url && <img src={p.image_url} alt="" className="h-full w-full object-cover" />}
+          <div className="grid gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p className="text-sm font-semibold">Fotos do produto</p>
+                <p className="text-xs text-muted-foreground">Adicione até 5 imagens. A primeira será a foto principal.</p>
+              </div>
+              <label className={`${btn} cursor-pointer border ${p.image_urls.length >= 5 ? "pointer-events-none opacity-50" : ""}`}>
+                <ImagePlus className="h-4 w-4" /> Adicionar fotos ({p.image_urls.length}/5)
+                <input type="file" accept="image/*" multiple className="hidden" disabled={p.image_urls.length >= 5} onChange={async (e) => {
+                  const files = Array.from(e.target.files ?? []).slice(0, 5 - p.image_urls.length);
+                  if (files.length) {
+                    const images = await Promise.all(files.map(fileToDataUrl));
+                    const image_urls = [...p.image_urls, ...images].slice(0, 5);
+                    setP({ ...p, image_urls, image_url: image_urls[0] ?? null });
+                  }
+                  e.currentTarget.value = "";
+                }} />
+              </label>
             </div>
-            <label className={`${btn} cursor-pointer border`}>
-              <ImagePlus className="h-4 w-4" /> Trocar foto
-              <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                const f = e.target.files?.[0];
-                if (f) setP({ ...p, image_url: await fileToDataUrl(f) });
-              }} />
-            </label>
+            {p.image_urls.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                {p.image_urls.map((url, index) => (
+                  <div key={index} className="relative overflow-hidden rounded-lg border bg-muted">
+                    <img src={url} alt={`Foto ${index + 1} de ${p.name}`} className="aspect-square w-full object-contain" />
+                    <span className="absolute left-1 top-1 rounded bg-[#070d22]/85 px-2 py-1 text-xs text-white">{index + 1}{index === 0 ? " · Principal" : ""}</span>
+                    <button type="button" aria-label={`Remover foto ${index + 1}`} onClick={() => {
+                      const image_urls = p.image_urls.filter((_, i) => i !== index);
+                      setP({ ...p, image_urls, image_url: image_urls[0] ?? null });
+                    }} className="absolute right-1 top-1 rounded-full bg-black/75 p-1 text-white"><X className="h-4 w-4" /></button>
+                  </div>
+                ))}
+              </div>
+            ) : <p className="rounded-lg border border-dashed p-5 text-center text-sm text-muted-foreground">Nenhuma foto adicionada.</p>}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Nome"><input className={input} value={p.name} onChange={(e) => setP({ ...p, name: e.target.value })} /></Field>
