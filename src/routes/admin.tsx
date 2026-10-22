@@ -119,6 +119,7 @@ function Dashboard() {
     const to = reordered.findIndex((p) => p.id === targetId);
     if (from < 0 || to < 0) return;
     const moved = reordered.splice(from, 1)[0];
+    if (!moved) return;
     reordered.splice(to, 0, moved);
     setSavingOrder(true);
     const results = await Promise.all(reordered.map((p, index) => supabase.from("products").update({ sort_order: index + 1 }).eq("id", p.id)));

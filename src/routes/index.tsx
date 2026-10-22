@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { OrderCart } from "@/components/OrderCart";
 import { brl, type Product } from "@/lib/catalog";
 import { cartSchema, orderTotals, resolveCart, type CartItem } from "@/lib/order";
+import { navigateCarousel } from "@/lib/carousel";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -83,19 +84,15 @@ function Index() {
   const catalogCarouselRef = useRef<HTMLDivElement>(null);
   const desktopCatalogCarouselRef = useRef<HTMLDivElement>(null);
   const scrollCarousel = (ref: { current: HTMLDivElement | null }, direction: -1 | 1) => {
-    const el = ref.current;
-    if (!el) return;
-    const firstCard = el.querySelector<HTMLElement>("[data-carousel-card]");
-    const distance = firstCard ? firstCard.offsetWidth + 16 : el.clientWidth * 0.8;
-    el.scrollBy({ left: distance * direction, behavior: "smooth" });
+    navigateCarousel(ref.current, direction);
   };
   const carouselCardClass = "min-w-0";
   const catalogItems = visible.filter(matchesSearch);
   const scrollCatalog = (direction: -1 | 1) => {
-    const el = window.matchMedia("(min-width: 1280px)").matches
-      ? desktopCatalogCarouselRef.current
-      : catalogCarouselRef.current;
-    if (el) el.scrollBy({ left: el.clientWidth * direction, behavior: "smooth" });
+    // Select the rendered track instead of duplicating CSS breakpoint logic.
+    const desktop = desktopCatalogCarouselRef.current;
+    const el = desktop && desktop.clientWidth > 0 ? desktop : catalogCarouselRef.current;
+    navigateCarousel(el, direction, "page");
   };
 
   return (
