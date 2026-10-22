@@ -102,11 +102,11 @@ function Index() {
     if (!el) return;
 
     const firstCard = el.querySelector<HTMLElement>("[data-catalog-item]");
-    const visibleCards = el.classList.contains("grid")
+    const visibleCards = el === desktop
       ? 8
       : Math.max(1, Math.floor(el.clientWidth / (firstCard?.offsetWidth || el.clientWidth)));
     const gap = Number.parseFloat(getComputedStyle(el).columnGap) || 16;
-    const distance = el.classList.contains("grid")
+    const distance = el === desktop
       ? el.clientWidth
       : (firstCard?.offsetWidth || el.clientWidth) * visibleCards + gap * Math.max(0, visibleCards - 1);
 
