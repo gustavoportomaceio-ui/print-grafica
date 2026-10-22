@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { brl } from "@/lib/catalog";
+import { Trash2 } from "lucide-react";
 
 const statuses = [
   { value: "recebido", label: "Recebido" },
@@ -27,6 +28,18 @@ export function AdminOrders() {
     const { error } = await supabase.from("orders").update({ status }).eq("id", id);
     if (error) {
       alert("Não foi possível atualizar o pedido: " + error.message);
+      return;
+    }
+    await qc.invalidateQueries({ queryKey: ["admin-orders"] });
+  }
+
+  async function deleteOrder(id: string, customerName: string) {
+    const confirmed = confirm(`Tem certeza de que deseja apagar o pedido de ${customerName}? Esta ação não pode ser desfeita.`);
+    if (!confirmed) return;
+
+    const { error } = await supabase.from("orders").delete().eq("id", id);
+    if (error) {
+      alert("Não foi possível apagar o pedido: " + error.message);
       return;
     }
     await qc.invalidateQueries({ queryKey: ["admin-orders"] });
@@ -72,6 +85,9 @@ export function AdminOrders() {
               <select aria-label={`Status do pedido de ${order.customer_name}`} className="h-10 rounded-lg border border-input bg-background px-3 text-sm" value={order.status} onChange={(e) => updateStatus(order.id, e.target.value as OrderStatus)}>
                 {statuses.map((status) => <option key={status.value} value={status.value}>{status.label}</option>)}
               </select>
+              <button type="button" onClick={() => deleteOrder(order.id, order.customer_name)} className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-destructive/40 px-3 text-sm font-semibold text-destructive transition hover:bg-destructive/10" aria-label={`Apagar pedido de ${order.customer_name}`}>
+                <Trash2 className="h-4 w-4" /> Apagar pedido
+              </button>
             </div>
           </article>
         ))}
