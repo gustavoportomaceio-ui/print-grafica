@@ -3,4 +3,4 @@
 - [x] Add cart and brief customer form with grouped WhatsApp message.
 - [x] Test pricing, order details and complete mobile ordering flow.
 - [x] Apply the orders table migration so placed orders are stored for admin follow-up.
-- [ ] Verify shared carousel arrow navigation, horizontal swipes and vertical scrolling on mobile, tablet and desktop without changing product layout.
+- [x] Verify shared carousel arrow navigation, horizontal swipes and vertical scrolling on mobile, tablet and desktop without changing product layout.
