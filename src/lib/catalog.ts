@@ -33,7 +33,7 @@ export const productsQuery = queryOptions({
       ...p,
       base_price: p.base_price === null ? null : Number(p.base_price),
       options: (p.options as unknown as ProductOption[]) ?? [],
-      image_urls: Array.isArray(p.image_urls) && p.image_urls.length ? p.image_urls : p.image_url ? [p.image_url] : [],
+      image_urls: "image_urls" in p && Array.isArray(p.image_urls) && p.image_urls.length ? p.image_urls : p.image_url ? [p.image_url] : [],
     })) as Product[];
   },
 });

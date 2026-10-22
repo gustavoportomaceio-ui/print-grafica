@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { brl, calcPrice, type Product } from "@/lib/catalog";
+import { navigateCarousel } from "@/lib/carousel";
 
 export function ProductCard({ product, onAdd }: { product: Product; onAdd: (product: Product, selected: Record<string, number>, notes: string, quantity: number) => boolean }) {
   const [sel, setSel] = useState<Record<string, number>>({});
@@ -14,7 +15,7 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
   const [activePhoto, setActivePhoto] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);
   const photos = product.image_urls?.length ? product.image_urls : product.image_url ? [product.image_url] : [];
-  const scrollPhotos = (direction: -1 | 1) => galleryRef.current?.scrollBy({ left: galleryRef.current.clientWidth * direction, behavior: "smooth" });
+  const scrollPhotos = (direction: -1 | 1) => navigateCarousel(galleryRef.current, direction);
   const [infoOpen, setInfoOpen] = useState(false);
   const price = calcPrice(product, sel);
 
@@ -24,7 +25,7 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
         <div className="relative aspect-square overflow-hidden bg-[#18223b]">
           {photos.length > 0 ? (
             <>
-              <div ref={galleryRef} onScroll={(e) => setActivePhoto(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))} className="flex h-full snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-x">
+              <div ref={galleryRef} onScroll={(e) => setActivePhoto(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))} className="flex h-full snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-auto">
                 {photos.map((url, index) => (
                   <button key={url + index} type="button" onClick={() => { setActivePhoto(index); setImageOpen(true); }} aria-label={`Ampliar foto ${index + 1} de ${product.name}`} className="relative h-full w-full shrink-0 snap-start cursor-zoom-in">
                     <img src={url} alt={`${product.name} — foto ${index + 1}`} loading="lazy" width={1024} height={1024} className="h-full w-full object-contain p-1 sm:p-2" />
@@ -33,8 +34,8 @@ export function ProductCard({ product, onAdd }: { product: Product; onAdd: (prod
               </div>
               {photos.length > 1 && (
                 <>
-                  <button type="button" aria-label="Foto anterior" onClick={() => scrollPhotos(-1)} className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-[#070d22]/85 text-white shadow-lg"><ChevronLeft className="h-5 w-5" /></button>
-                  <button type="button" aria-label="Próxima foto" onClick={() => scrollPhotos(1)} className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-[#070d22]/85 text-white shadow-lg"><ChevronRight className="h-5 w-5" /></button>
+                  <Button type="button" variant="outline" aria-label="Foto anterior" onClick={(event) => { event.stopPropagation(); scrollPhotos(-1); }} className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full border-border bg-background/85 p-0 text-foreground shadow-lg"><ChevronLeft className="h-5 w-5" /></Button>
+                  <Button type="button" variant="outline" aria-label="Próxima foto" onClick={(event) => { event.stopPropagation(); scrollPhotos(1); }} className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full border-border bg-background/85 p-0 text-foreground shadow-lg"><ChevronRight className="h-5 w-5" /></Button>
                   <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-[#070d22]/85 px-2.5 py-1 text-xs font-semibold text-white">{activePhoto + 1}/{photos.length}</span>
                 </>
               )}
