@@ -58,45 +58,48 @@ export type Database = {
           active: boolean
           base_price: number | null
           category: string
-          showcase: string
           created_at: string
           description: string
           featured: boolean
           id: string
           image_url: string | null
+          image_urls: Json
           name: string
           options: Json
           price_note: string | null
+          showcase: string
           sort_order: number
         }
         Insert: {
           active?: boolean
           base_price?: number | null
           category?: string
-          showcase?: string
           created_at?: string
           description?: string
           featured?: boolean
           id?: string
           image_url?: string | null
+          image_urls?: Json
           name: string
           options?: Json
           price_note?: string | null
+          showcase?: string
           sort_order?: number
         }
         Update: {
           active?: boolean
           base_price?: number | null
           category?: string
-          showcase?: string
           created_at?: string
           description?: string
           featured?: boolean
           id?: string
           image_url?: string | null
+          image_urls?: Json
           name?: string
           options?: Json
           price_note?: string | null
+          showcase?: string
           sort_order?: number
         }
         Relationships: []
