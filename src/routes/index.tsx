@@ -92,10 +92,25 @@ function Index() {
   const carouselCardClass = "min-w-0";
   const catalogItems = visible.filter(matchesSearch);
   const scrollCatalog = (direction: -1 | 1) => {
-    const el = window.matchMedia("(min-width: 1280px)").matches
-      ? desktopCatalogCarouselRef.current
-      : catalogCarouselRef.current;
-    if (el) el.scrollBy({ left: el.clientWidth * direction, behavior: "smooth" });
+    // Use the actually visible carousel instead of relying on a viewport breakpoint,
+    // so arrows also work reliably on tablets and devices with different scaling.
+    const desktop = desktopCatalogCarouselRef.current;
+    const mobileTablet = catalogCarouselRef.current;
+    const el = desktop && desktop.getClientRects().length > 0
+      ? desktop
+      : mobileTablet;
+    if (!el) return;
+
+    const firstCard = el.querySelector<HTMLElement>("[data-catalog-item]");
+    const visibleCards = el === desktop
+      ? 8
+      : Math.max(1, Math.floor(el.clientWidth / (firstCard?.offsetWidth || el.clientWidth)));
+    const gap = Number.parseFloat(getComputedStyle(el).columnGap) || 16;
+    const distance = el === desktop
+      ? el.clientWidth
+      : (firstCard?.offsetWidth || el.clientWidth) * visibleCards + gap * Math.max(0, visibleCards - 1);
+
+    el.scrollBy({ left: distance * direction, behavior: "smooth" });
   };
 
   return (
@@ -213,8 +228,8 @@ function Index() {
             </div>
             {catalogItems.length > 8 && (
               <div className="flex shrink-0 gap-2">
-                <Button variant="outline" aria-label="Itens anteriores" onClick={() => scrollCatalog(-1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
-                <Button variant="outline" aria-label="Próximos itens" onClick={() => scrollCatalog(1)} className="h-10 w-10 rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
+                <Button type="button" variant="outline" aria-label="Itens anteriores" onClick={() => scrollCatalog(-1)} className="relative z-10 h-10 w-10 touch-manipulation rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronLeft className="h-5 w-5" /></Button>
+                <Button type="button" variant="outline" aria-label="Próximos itens" onClick={() => scrollCatalog(1)} className="relative z-10 h-10 w-10 touch-manipulation rounded-full border-white/20 bg-[#11182d] p-0 text-white shadow-sm transition hover:border-cyan/50 hover:bg-[#18223b] hover:text-cyan"><ChevronRight className="h-5 w-5" /></Button>
               </div>
             )}
           </div>
