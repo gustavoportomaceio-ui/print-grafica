@@ -12,6 +12,7 @@ import {
   Menu,
   MessageCircle,
   Search,
+  UserRound,
   ShoppingBag,
   Sparkles,
   X,
@@ -163,31 +164,30 @@ export function Storefront({
   return (
     <div className="criattiva-site min-h-screen pb-24">
       <header className="store-header sticky top-0 z-20 border-b border-border bg-background">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <Link
             to="/"
             aria-label="Criattiva — início"
-            className="brand-name font-display text-3xl font-extrabold text-primary"
+            className="brand-name flex shrink-0 items-center font-display text-4xl font-black tracking-tight text-primary"
           >
-            Criattiva
+            Criattiva<span className="brand-star" aria-hidden="true">✦</span>
           </Link>
           <nav
             aria-label="Navegação principal"
             className="hidden items-center gap-8 text-sm font-bold lg:flex"
           >
-            <Link to="/" className={view === "home" ? "text-primary" : ""}>
+            <Link to="/" className={view === "home" ? "nav-current" : "nav-link"}>
               Início
             </Link>
             <div className="relative">
               <Button
                 variant="ghost"
-                className="px-0 text-sm font-bold"
+                className="nav-link px-0 text-sm font-bold"
                 aria-expanded={productsMenuOpen}
                 aria-controls="product-menu"
                 onClick={() => setProductsMenuOpen((v) => !v)}
               >
                 Produtos <ChevronDown />
-              </Button>
               {productsMenuOpen && (
                 <nav
                   id="product-menu"
@@ -201,16 +201,29 @@ export function Storefront({
             <Link to="/sobre">Sobre nós</Link>
             <Link to="/contato">Contato</Link>
           </nav>
-          <div className="flex items-center gap-2">
-            <Button asChild className="hidden h-11 sm:inline-flex">
-              <a href={"https://wa.me/" + phone} target="_blank" rel="noopener noreferrer">
-                <MessageCircle /> Orçamento
-              </a>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden h-11 w-11 text-secondary sm:inline-flex"
+              aria-label="Ver produtos"
+              onClick={() => { window.location.href = "/produtos"; }}
+            >
+              <Search className="h-6 w-6" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="relative h-11 w-11"
+              className="hidden h-11 w-11 text-secondary sm:inline-flex"
+              aria-label="Área do administrador"
+              onClick={() => { window.location.href = "/admin"; }}
+            >
+              <UserRound className="h-6 w-6" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative h-11 w-11 text-secondary"
               aria-label={"Abrir carrinho, " + count + " itens"}
               onClick={() => setCartOpen(true)}
             >
@@ -263,17 +276,13 @@ export function Storefront({
             <div className="gift-banner-shade absolute inset-0" />
             <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-6 sm:py-20 lg:px-8">
               <div className="gift-copy max-w-lg">
-                <p className="mb-4 text-sm font-bold text-secondary">Feitos para surpreender.</p>
-                <h1 className="font-display text-4xl font-extrabold leading-tight text-secondary sm:text-5xl">
-                  Presentes e brindes <span className="text-primary">personalizados.</span>
+                <p className="mb-3 text-sm font-extrabold uppercase tracking-wider text-secondary">Criativos • Autênticos • Com a sua marca</p>
+                <h1 className="font-display text-5xl font-black leading-[0.94] text-secondary sm:text-6xl lg:text-7xl">
+                  Presentes e<br />Brindes<br />Personalizados
                 </h1>
-                <p className="mt-5 max-w-sm text-base leading-relaxed text-foreground">
-                  Um toque de criatividade para transformar ideias em presentes cheios de
-                  significado.
-                </p>
-                <Button asChild className="mt-7 h-12 px-6 font-bold">
+                <Button asChild className="mt-7 h-12 rounded-full bg-secondary px-7 font-bold text-secondary-foreground hover:bg-secondary/90">
                   <Link to="/produtos" search={{ categoria: "" }}>
-                    Encontre seu presente <ArrowRight />
+                    Conheça nossos produtos <ArrowRight />
                   </Link>
                 </Button>
               </div>
@@ -289,7 +298,7 @@ export function Storefront({
           </section>
           <section
             aria-label="Benefícios Criattiva"
-            className="benefits-band bg-primary text-primary-foreground"
+            className="benefits-band"
           >
             <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-5 gap-y-6 px-5 py-8 lg:grid-cols-4 lg:px-8">
               {[
@@ -308,9 +317,8 @@ export function Storefront({
           <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="mb-7 flex items-center justify-between gap-3">
               <div>
-                <p className="mb-2 text-sm font-bold text-primary">Uma seleção para encantar</p>
-                <h2 className="text-3xl font-extrabold text-secondary sm:text-4xl">
-                  Nossos Destaques
+                <h2 className="featured-heading text-3xl font-black text-secondary sm:text-4xl lg:text-5xl">
+                  <span aria-hidden="true">〰</span> Nossos Destaques <span aria-hidden="true">〰</span>
                 </h2>
               </div>
               <div className="flex shrink-0 gap-2">
