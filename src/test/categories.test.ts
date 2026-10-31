@@ -3,7 +3,13 @@ import { catalogCategories, filterCategory } from "../lib/categories";
 
 describe("Public categories", () => {
   it("includes the four requested categories and future admin product categories", () => {
-    expect(catalogCategories([{ category: "Nova categoria" }])).toEqual(["Canecas e copos", "Garrafas e squeezes", "T-shirts, bolsas e bonés", "Kits corporativos", "Nova categoria"]);
+    expect(catalogCategories([{ category: "Nova categoria" }])).toEqual([
+      "Canecas e copos",
+      "Garrafas e squeezes",
+      "T-shirts, bolsas e bonés",
+      "Kits corporativos",
+      "Nova categoria",
+    ]);
   });
   it("filters without modifying or reclassifying existing products", () => {
     const products = [{ category: "Canecas e copos" }, { category: "Cartões" }];

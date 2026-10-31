@@ -79,7 +79,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Criattiva | Presentes e brindes personalizados" },
-      { name: "description", content: "Criattiva: presentes e brindes personalizados com orçamento pelo WhatsApp." },
+      {
+        name: "description",
+        content: "Criattiva: presentes e brindes personalizados com orçamento pelo WhatsApp.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

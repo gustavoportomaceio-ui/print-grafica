@@ -1,7 +1,6 @@
 @import "tailwindcss" source(none);
-@source "../src";
 @import "tw-animate-css";
-
+@source "../src";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -42,94 +41,48 @@
 }
 
 :root {
-  --radius: 0.875rem;
-  --background: #070d22;
-  --foreground: #f8fafc;
-  --card: #11182d;
-  --card-foreground: #f8fafc;
-  --popover: #11182d;
-  --popover-foreground: #f8fafc;
-  --primary: #ed168c;
-  --primary-foreground: #ffffff;
-  --secondary: #18223b;
-  --secondary-foreground: #f8fafc;
-  --muted: #18223b;
-  --muted-foreground: #b7c0d3;
-  --accent: #18223b;
-  --accent-foreground: #f8fafc;
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: #ffffff;
-  --border: #28324b;
-  --input: #28324b;
-  --ring: #08c4e9;
-  --ink: #070d22;
-  --ink-foreground: #f8fafc;
-  --whatsapp: #ed168c;
-  --whatsapp-foreground: #ffffff;
-  --cyan: #08c4e9;
-  --magenta: #ed168c;
-  --yellow: #ffdf00;
-  --shadow-card: 0 2px 5px rgb(0 0 0 / 20%), 0 16px 35px -18px rgb(0 0 0 / 60%);
+  --radius: 0.5rem;
+  --background: oklch(0.975 0.018 85);
+  --foreground: oklch(0.29 0.035 320);
+  --card: oklch(0.995 0.006 85);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.57 0.185 32);
+  --primary-foreground: oklch(0.995 0.005 85);
+  --secondary: oklch(0.4 0.15 310);
+  --secondary-foreground: oklch(0.995 0.005 85);
+  --muted: oklch(0.943 0.027 75);
+  --muted-foreground: oklch(0.47 0.035 320);
+  --accent: oklch(0.925 0.035 310);
+  --accent-foreground: var(--secondary);
+  --destructive: oklch(0.55 0.21 27);
+  --destructive-foreground: var(--primary-foreground);
+  --border: oklch(0.88 0.035 75);
+  --input: var(--border);
+  --ring: var(--secondary);
+  --ink: var(--secondary);
+  --ink-foreground: var(--secondary-foreground);
+  --whatsapp: var(--primary);
+  --whatsapp-foreground: var(--primary-foreground);
+  --cyan: var(--secondary);
+  --magenta: var(--primary);
+  --yellow: oklch(0.9 0.145 90);
+  --shadow-card: 0 6px 22px -12px color-mix(in oklab, var(--foreground) 22%, transparent);
+  --banner-shade: linear-gradient(
+    90deg,
+    var(--background) 0%,
+    color-mix(in oklab, var(--background) 98%, transparent) 22%,
+    color-mix(in oklab, var(--background) 85%, transparent) 35%,
+    transparent 65%
+  );
 }
-
 @layer base {
-  * { border-color: var(--color-border); }
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-  }
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.025em; }
-  html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
-}
-
-@utility shadow-card { box-shadow: var(--shadow-card); }
-@utility cmyk-bar {
-  background: linear-gradient(90deg, var(--cyan) 0 25%, var(--magenta) 25% 50%, var(--yellow) 50% 75%, var(--ink) 75% 100%);
-}
-
-.site-header { box-shadow: 0 4px 18px rgb(0 0 0 / 18%); }
-.site-logo { border-radius: 0; display: block; }\n\n.catalog-section input { color: #f8fafc; }\n.catalog-section input::placeholder { color: #8b97ad; }\n.catalog-section .text-slate-500 { color: #b7c0d3; }\n.catalog-section .text-slate-700 { color: #dce3f0; }\n.catalog-section .border-slate-200 { border-color: #28324b; }\n.catalog-section .bg-white { background-color: #11182d; }\n.catalog-section .text-ink { color: #f8fafc; }\n.catalog-section .hover\\:bg-white:hover { background-color: #18223b; }
-.nav-link { position: relative; padding: 0.8rem 0; transition: color 160ms ease; }
-.nav-link:hover, .nav-link-active { color: #00bdeb; }
-.nav-link-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.3rem; height: 2px; border-radius: 999px; background: #08c4e9; }
-.hero-section { background: #070d22; }
-.hero-image { z-index: 0; overflow: hidden; width: 64%; }
-.hero-image img {
-  object-position: right center;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 18%) 12%, #000 46%);
-  mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 18%) 12%, #000 46%);
-}
-.hero-shade {
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(90deg, #070d22 0%, #070d22 30%, rgb(7 13 34 / 94%) 42%, rgb(7 13 34 / 52%) 57%, rgb(7 13 34 / 12%) 78%, transparent 100%);
-}
-.hero-feature-icon {
-  display: inline-flex;
-  width: 2.6rem;
-  height: 2.6rem;
-  flex: 0 0 2.6rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgb(255 255 255 / 75%);
-  border-radius: 999px;
-  color: #08c4e9;
-}
-.catalog-section { scroll-margin-top: 5.5rem; }
-@media (max-width: 767px) {
-  .hero-image { inset: auto 0 0; height: 190px; width: 100%; opacity: 0.34; }
-  .hero-image img { -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 55%); mask-image: linear-gradient(180deg, transparent 0%, #000 55%); }
-  .hero-shade { background: linear-gradient(180deg, #070d22 0%, rgb(7 13 34 / 96%) 58%, rgb(7 13 34 / 65%) 100%); }
-  .hero-copy { position: relative; z-index: 1; }
-}
-
-
-/* Keep the document viewport fixed horizontally on mobile. Individual carousels retain their own horizontal scrolling. */
-@layer base {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
+    border-color: var(--border);
   }
   html {
     width: 100%;
@@ -137,9 +90,104 @@
     overflow-x: hidden;
   }
   body {
+    margin: 0;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
-    position: relative;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+}
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+@utility cmyk-bar {
+  background: var(--primary);
+}
+.category-menu {
+  border-radius: 8px;
+}
+.category-menu a {
+  display: block;
+  padding: 11px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.category-menu a:hover {
+  background: var(--accent);
+  color: var(--secondary);
+}
+.gift-banner {
+  min-height: 485px;
+}
+.gift-banner-image {
+  object-position: center 60%;
+}
+.gift-banner-shade {
+  background: var(--banner-shade);
+}
+.banner-wave {
+  fill: var(--primary);
+}
+.creative-band::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 22px;
+  top: -13px;
+  left: 0;
+  background: var(--background);
+  border-radius: 0 0 70% 45%;
+}
+@media (max-width: 767px) {
+  .gift-banner {
+    min-height: 575px;
+  }
+  .gift-banner-image {
+    height: 300px;
+    top: auto;
+    bottom: 0;
+    object-position: right center;
+  }
+  .gift-banner-shade {
+    background: linear-gradient(
+      180deg,
+      var(--background) 0%,
+      var(--background) 45%,
+      transparent 70%
+    );
+  }
+  .gift-copy {
+    max-width: 390px;
+  }
+  .gift-banner .gift-copy h1 {
+    font-size: 36px;
+  }
+  .benefits-band h2 {
+    font-size: 13px;
+  }
+  .brand-name {
+    font-size: 28px;
+  }
+  #product-menu {
+    position: static;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
   }
 }
