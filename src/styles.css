@@ -42,19 +42,19 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.975 0.018 85);
-  --foreground: oklch(0.29 0.035 320);
-  --card: oklch(0.995 0.006 85);
+  --background: oklch(0.982 0.025 78);
+  --foreground: oklch(0.31 0.075 305);
+  --card: oklch(0.998 0.008 78);
   --card-foreground: var(--foreground);
   --popover: var(--card);
   --popover-foreground: var(--foreground);
-  --primary: oklch(0.57 0.185 32);
+  --primary: oklch(0.63 0.205 35);
   --primary-foreground: oklch(0.995 0.005 85);
-  --secondary: oklch(0.4 0.15 310);
+  --secondary: oklch(0.43 0.19 305);
   --secondary-foreground: oklch(0.995 0.005 85);
-  --muted: oklch(0.943 0.027 75);
-  --muted-foreground: oklch(0.47 0.035 320);
-  --accent: oklch(0.925 0.035 310);
+  --muted: oklch(0.95 0.045 82);
+  --muted-foreground: oklch(0.49 0.07 305);
+  --accent: oklch(0.93 0.065 310);
   --accent-foreground: var(--secondary);
   --destructive: oklch(0.55 0.21 27);
   --destructive-foreground: var(--primary-foreground);
@@ -67,7 +67,7 @@
   --whatsapp-foreground: var(--primary-foreground);
   --cyan: var(--secondary);
   --magenta: var(--primary);
-  --yellow: oklch(0.9 0.145 90);
+  --yellow: oklch(0.91 0.17 92);
   --shadow-card: 0 6px 22px -12px color-mix(in oklab, var(--foreground) 22%, transparent);
   --banner-shade: linear-gradient(
     90deg,
@@ -114,8 +114,26 @@
 @utility cmyk-bar {
   background: var(--primary);
 }
+.criattiva-site {
+  background:
+    radial-gradient(ellipse at 0% 42%, color-mix(in oklab, var(--magenta) 12%, transparent) 0 9%, transparent 9.2%),
+    radial-gradient(ellipse at 100% 76%, color-mix(in oklab, var(--yellow) 24%, transparent) 0 10%, transparent 10.2%),
+    var(--background);
+}
+.store-header {
+  background: color-mix(in oklab, var(--background) 94%, white);
+  box-shadow: 0 5px 24px -18px var(--foreground);
+}
 .category-menu {
-  border-radius: 8px;
+  border-radius: 16px;
+  box-shadow: 0 16px 38px -20px color-mix(in oklab, var(--secondary) 35%, transparent);
+}
+.category-menu a {
+  border-radius: 10px;
+}
+.category-menu a:hover {
+  background: color-mix(in oklab, var(--yellow) 28%, var(--background));
+  color: var(--secondary);
 }
 .category-menu a {
   display: block;
@@ -129,6 +147,32 @@
 }
 .gift-banner {
   min-height: 485px;
+  isolation: isolate;
+  background: var(--accent);
+}
+.gift-banner::before,
+.gift-banner::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 48% 52% 62% 38% / 42% 38% 62% 58%;
+}
+.gift-banner::before {
+  width: 230px;
+  height: 170px;
+  left: -95px;
+  top: -55px;
+  background: color-mix(in oklab, var(--secondary) 28%, transparent);
+  transform: rotate(-24deg);
+}
+.gift-banner::after {
+  width: 190px;
+  height: 150px;
+  right: -72px;
+  bottom: 30px;
+  background: color-mix(in oklab, var(--yellow) 48%, transparent);
+  transform: rotate(28deg);
 }
 .gift-banner-image {
   object-position: center 60%;
@@ -137,7 +181,26 @@
   background: var(--banner-shade);
 }
 .banner-wave {
-  fill: var(--primary);
+  z-index: 2;
+  fill: var(--background);
+}
+.benefits-band {
+  background: var(--background);
+  color: var(--secondary);
+  border-bottom: 1px solid var(--border);
+}
+.benefits-band > div > div {
+  justify-content: center;
+  border-right: 1px solid var(--border);
+}
+.benefits-band > div > div:last-child {
+  border-right: 0;
+}
+.creative-band {
+  background:
+    radial-gradient(ellipse at 0% 100%, color-mix(in oklab, var(--magenta) 42%, transparent) 0 20%, transparent 20.5%),
+    radial-gradient(ellipse at 100% 0%, color-mix(in oklab, var(--yellow) 36%, transparent) 0 18%, transparent 18.5%),
+    var(--secondary);
 }
 .creative-band::before {
   content: "";
