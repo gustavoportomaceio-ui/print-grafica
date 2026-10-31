@@ -5,15 +5,19 @@ import type { Session } from "@supabase/supabase-js";
 import { Plus, Trash2, Save, LogOut, ImagePlus, X, Copy, GripVertical } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { productsQuery, settingsQuery, type Product, type ProductOption } from "@/lib/catalog";
+import { catalogCategories } from "@/lib/categories";
 import { AdminOrders } from "@/components/AdminOrders";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Painel do administrador — Catálogo Gráfico" },
+      { title: "Painel do administrador | Criattiva" },
       { name: "description", content: "Gerencie produtos, preços e fotos do catálogo." },
-      { property: "og:title", content: "Painel do administrador" },
-      { property: "og:description", content: "Gerencie o catálogo de serviços gráficos." },
+      { property: "og:title", content: "Painel do administrador | Criattiva" },
+      {
+        property: "og:description",
+        content: "Gerencie produtos personalizados e orçamentos da Criattiva.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -59,7 +63,9 @@ function AdminPage() {
     return (
       <div className="p-10 text-center">
         <p>Esta conta não tem permissão de administrador.</p>
-        <button className={`${btn} mt-4 border`} onClick={() => supabase.auth.signOut()}>Sair</button>
+        <button className={`${btn} mt-4 border`} onClick={() => supabase.auth.signOut()}>
+          Sair
+        </button>
       </div>
     );
   return <Dashboard />;
@@ -85,21 +91,52 @@ function AuthForm() {
       password,
     });
     setBusy(false);
-    if (error) setMsg("Usuário ou senha inválidos. Confirme também se o acesso administrativo foi configurado.");
+    if (error)
+      setMsg(
+        "Usuário ou senha inválidos. Confirme também se o acesso administrativo foi configurado.",
+      );
   }
 
   return (
     <div className="grid min-h-screen place-items-center bg-ink px-4">
-      <form onSubmit={submit} className="w-full max-w-sm space-y-4 rounded-2xl bg-card p-6 shadow-card">
+      <form
+        onSubmit={submit}
+        className="w-full max-w-sm space-y-4 rounded-2xl bg-card p-6 shadow-card"
+      >
         <h1 className="text-2xl font-extrabold">Painel do administrador</h1>
         <p className="text-sm text-muted-foreground">Entre com seu usuário e senha.</p>
-        <input className={input} type="text" autoComplete="username" required minLength={3} maxLength={32} placeholder="Usuário" value={username} onChange={(e) => setUsername(e.target.value)} />
-        <input className={input} type="password" autoComplete="current-password" required minLength={6} placeholder="Senha (mínimo 6 caracteres)" value={password} onChange={(e) => setPassword(e.target.value)} />
-        {msg && <p role="alert" className="text-sm text-destructive">{msg}</p>}
+        <input
+          className={input}
+          type="text"
+          autoComplete="username"
+          required
+          minLength={3}
+          maxLength={32}
+          placeholder="Usuário"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          className={input}
+          type="password"
+          autoComplete="current-password"
+          required
+          minLength={6}
+          placeholder="Senha (mínimo 6 caracteres)"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {msg && (
+          <p role="alert" className="text-sm text-destructive">
+            {msg}
+          </p>
+        )}
         <button disabled={busy} className={`${btn} w-full bg-primary text-primary-foreground`}>
           {busy ? "Entrando…" : "Entrar"}
         </button>
-        <Link to="/" className="block text-center text-sm text-muted-foreground">← Voltar ao catálogo</Link>
+        <Link to="/" className="block text-center text-sm text-muted-foreground">
+          ← Voltar ao catálogo
+        </Link>
       </form>
     </div>
   );
@@ -119,9 +156,17 @@ function Dashboard() {
     const to = reordered.findIndex((p) => p.id === targetId);
     if (from < 0 || to < 0) return;
     const moved = reordered.splice(from, 1)[0];
+    if (!moved) return;
     reordered.splice(to, 0, moved);
     setSavingOrder(true);
-    const results = await Promise.all(reordered.map((p, index) => supabase.from("products").update({ sort_order: index + 1 }).eq("id", p.id)));
+    const results = await Promise.all(
+      reordered.map((p, index) =>
+        supabase
+          .from("products")
+          .update({ sort_order: index + 1 })
+          .eq("id", p.id),
+      ),
+    );
     setSavingOrder(false);
     setDraggedProductId(null);
     const failed = results.find((result) => result.error);
@@ -130,9 +175,19 @@ function Dashboard() {
   }
 
   const blank: Product = {
-    id: "", name: "", category: "Outros", showcase: "produtos", description: "", image_url: null, image_urls: [], base_price: 0,
-    price_note: "", options: [],
-    featured: false, active: true, sort_order: products.length + 1,
+    id: "",
+    name: "",
+    category: "Outros",
+    showcase: "produtos",
+    description: "",
+    image_url: null,
+    image_urls: [],
+    base_price: 0,
+    price_note: "",
+    options: [],
+    featured: false,
+    active: true,
+    sort_order: products.length + 1,
   };
 
   return (
@@ -142,8 +197,12 @@ function Dashboard() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <h1 className="text-lg font-bold">Painel</h1>
           <div className="flex gap-2">
-            <Link to="/" className={`${btn} border`}>Ver catálogo</Link>
-            <button className={`${btn} border`} onClick={() => supabase.auth.signOut()}><LogOut className="h-4 w-4" /></button>
+            <Link to="/" className={`${btn} border`}>
+              Ver catálogo
+            </Link>
+            <button className={`${btn} border`} onClick={() => supabase.auth.signOut()}>
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </header>
@@ -154,9 +213,15 @@ function Dashboard() {
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">Produtos</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Arraste pelo ícone de alça para organizar a ordem no catálogo.{savingOrder ? " Salvando ordem…" : ""}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Arraste pelo ícone de alça para organizar a ordem no catálogo.
+                {savingOrder ? " Salvando ordem…" : ""}
+              </p>
             </div>
-            <button className={`${btn} bg-primary text-primary-foreground`} onClick={() => setEditing(blank)}>
+            <button
+              className={`${btn} bg-primary text-primary-foreground`}
+              onClick={() => setEditing(blank)}
+            >
               <Plus className="h-4 w-4" /> Novo produto
             </button>
           </div>
@@ -165,43 +230,69 @@ function Dashboard() {
               <div
                 key={p.id}
                 onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) => { event.preventDefault(); void reorderProducts(p.id); }}
-                className={"flex items-center gap-2 p-3 hover:bg-muted " + (draggedProductId === p.id ? "opacity-40" : "")}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  void reorderProducts(p.id);
+                }}
+                className={
+                  "flex items-center gap-2 p-3 hover:bg-muted " +
+                  (draggedProductId === p.id ? "opacity-40" : "")
+                }
               >
                 <button
                   type="button"
                   draggable
                   title={"Arrastar para reordenar " + p.name}
                   aria-label={"Arrastar para reordenar " + p.name}
-                  onDragStart={(event) => { setDraggedProductId(p.id); event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", p.id); }}
+                  onDragStart={(event) => {
+                    setDraggedProductId(p.id);
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", p.id);
+                  }}
                   onDragEnd={() => setDraggedProductId(null)}
                   disabled={savingOrder}
                   className={btn + " h-10 shrink-0 cursor-grab border px-2 active:cursor-grabbing"}
-                ><GripVertical className="h-5 w-5" /></button>
-                <button onClick={() => setEditing(p)} className="flex min-w-0 flex-1 items-center gap-4 text-left">
+                >
+                  <GripVertical className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setEditing(p)}
+                  className="flex min-w-0 flex-1 items-center gap-4 text-left"
+                >
                   <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
-                    {p.image_url && <img src={p.image_url} alt="" className="h-full w-full object-cover" />}
+                    {p.image_url && (
+                      <img src={p.image_url} alt="" className="h-full w-full object-cover" />
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate font-semibold">{p.name} {!p.active && <span className="text-xs text-muted-foreground">(oculto)</span>}</div>
-                    <div className="text-sm text-muted-foreground">{p.category} · {p.showcase === "servicos" ? "Serviços" : "Produtos"}</div>
+                    <div className="truncate font-semibold">
+                      {p.name}{" "}
+                      {!p.active && <span className="text-xs text-muted-foreground">(oculto)</span>}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {p.category} · {p.showcase === "servicos" ? "Serviços" : "Produtos"}
+                    </div>
                   </div>
                   <div className="shrink-0 text-sm font-semibold">
-                    {p.base_price !== null ? `R$ ${p.base_price.toFixed(2)}` : p.price_note || "Sob consulta"}
+                    {p.base_price !== null
+                      ? `R$ ${p.base_price.toFixed(2)}`
+                      : p.price_note || "Sob consulta"}
                   </div>
                 </button>
                 <button
                   type="button"
                   title={`Duplicar ${p.name}`}
                   aria-label={`Duplicar ${p.name}`}
-                  onClick={() => setEditing({
-                    ...structuredClone(p),
-                    id: "",
-                    name: `${p.name} (cópia)`,
-                    active: true,
-                    featured: false,
-                    sort_order: products.length + 1,
-                  })}
+                  onClick={() =>
+                    setEditing({
+                      ...structuredClone(p),
+                      id: "",
+                      name: `${p.name} (cópia)`,
+                      active: true,
+                      featured: false,
+                      sort_order: products.length + 1,
+                    })
+                  }
                   className={`${btn} h-9 shrink-0 border px-3`}
                 >
                   <Copy className="h-4 w-4" />
@@ -216,7 +307,10 @@ function Dashboard() {
         <ProductEditor
           product={editing}
           onClose={() => setEditing(null)}
-          onSaved={() => { qc.invalidateQueries({ queryKey: ["products"] }); setEditing(null); }}
+          onSaved={() => {
+            qc.invalidateQueries({ queryKey: ["products"] });
+            setEditing(null);
+          }}
         />
       )}
     </div>
@@ -228,7 +322,9 @@ function SettingsForm() {
   const { data } = useQuery(settingsQuery);
   const [s, setS] = useState({ store_name: "", whatsapp: "", tagline: "" });
   const [saved, setSaved] = useState(false);
-  useEffect(() => { if (data) setS(data); }, [data]);
+  useEffect(() => {
+    if (data) setS(data);
+  }, [data]);
 
   async function save() {
     const { error } = await supabase.from("settings").update(s).eq("id", 1);
@@ -242,11 +338,33 @@ function SettingsForm() {
     <section className="rounded-2xl border bg-card p-5">
       <h2 className="mb-4 text-xl font-bold">Dados da loja</h2>
       <div className="grid gap-3 md:grid-cols-3">
-        <Field label="Nome da loja"><input className={input} value={s.store_name} onChange={(e) => setS({ ...s, store_name: e.target.value })} /></Field>
-        <Field label="WhatsApp (com DDI e DDD)"><input className={input} placeholder="5511999999999" value={s.whatsapp} onChange={(e) => setS({ ...s, whatsapp: e.target.value })} /></Field>
-        <Field label="Descrição da aba destaques"><input className={input} placeholder="Tudo o que você precisa para o volta às aulas do seu filho(a)!" value={s.tagline} onChange={(e) => setS({ ...s, tagline: e.target.value })} /></Field>
+        <Field label="Nome da loja">
+          <input
+            className={input}
+            value={s.store_name}
+            onChange={(e) => setS({ ...s, store_name: e.target.value })}
+          />
+        </Field>
+        <Field label="WhatsApp (com DDI e DDD)">
+          <input
+            className={input}
+            placeholder="5511999999999"
+            value={s.whatsapp}
+            onChange={(e) => setS({ ...s, whatsapp: e.target.value })}
+          />
+        </Field>
+        <Field label="Descrição da aba destaques">
+          <input
+            className={input}
+            placeholder="Tudo o que você precisa para o volta às aulas do seu filho(a)!"
+            value={s.tagline}
+            onChange={(e) => setS({ ...s, tagline: e.target.value })}
+          />
+        </Field>
       </div>
-      <button onClick={save} className={`${btn} mt-4 bg-ink text-ink-foreground`}><Save className="h-4 w-4" /> {saved ? "Salvo!" : "Salvar"}</button>
+      <button onClick={save} className={`${btn} mt-4 bg-ink text-ink-foreground`}>
+        <Save className="h-4 w-4" /> {saved ? "Salvo!" : "Salvar"}
+      </button>
     </section>
   );
 }
@@ -254,7 +372,9 @@ function SettingsForm() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="grid gap-1">
-      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
+      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
       {children}
     </label>
   );
@@ -271,21 +391,40 @@ async function fileToDataUrl(file: File): Promise<string> {
   return c.toDataURL("image/jpeg", 0.82);
 }
 
-function ProductEditor({ product, onClose, onSaved }: { product: Product; onClose: () => void; onSaved: () => void }) {
+function ProductEditor({
+  product,
+  onClose,
+  onSaved,
+}: {
+  product: Product;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const { data: categoryProducts = [] } = useQuery(productsQuery);
   const [p, setP] = useState<Product>(structuredClone(product));
   const [hasPrice, setHasPrice] = useState(product.base_price !== null);
   const [hasOptions, setHasOptions] = useState(product.options.length > 0);
   const [busy, setBusy] = useState(false);
 
-  const setOpt = (i: number, o: ProductOption) => setP({ ...p, options: p.options.map((x, j) => (j === i ? o : x)) });
+  const setOpt = (i: number, o: ProductOption) =>
+    setP({ ...p, options: p.options.map((x, j) => (j === i ? o : x)) });
 
   async function save() {
     if (!p.name.trim()) return alert("Informe o nome do produto.");
     setBusy(true);
     const row = {
-      name: p.name, category: p.category, showcase: p.showcase, description: p.description, image_url: p.image_urls[0] ?? p.image_url, image_urls: p.image_urls.slice(0, 5) as unknown as never,
-      base_price: hasPrice ? Number(p.base_price) || 0 : null, price_note: p.price_note,
-      options: (hasOptions ? p.options : []) as unknown as never, featured: p.featured, active: p.active, sort_order: p.sort_order,
+      name: p.name,
+      category: p.category,
+      showcase: p.showcase,
+      description: p.description,
+      image_url: p.image_urls[0] ?? p.image_url,
+      image_urls: p.image_urls.slice(0, 5) as unknown as never,
+      base_price: hasPrice ? Number(p.base_price) || 0 : null,
+      price_note: p.price_note,
+      options: (hasOptions ? p.options : []) as unknown as never,
+      featured: p.featured,
+      active: p.active,
+      sort_order: p.sort_order,
     };
     const { error } = p.id
       ? await supabase.from("products").update(row).eq("id", p.id)
@@ -307,7 +446,9 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
       <div className="max-h-[95vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-card p-5 sm:rounded-2xl">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">{p.id ? "Editar produto" : "Novo produto"}</h2>
-          <button onClick={onClose}><X className="h-5 w-5" /></button>
+          <button onClick={onClose}>
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         <div className="grid gap-4">
@@ -315,60 +456,156 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <p className="text-sm font-semibold">Fotos do produto</p>
-                <p className="text-xs text-muted-foreground">Adicione até 5 imagens. A primeira será a foto principal.</p>
+                <p className="text-xs text-muted-foreground">
+                  Adicione até 5 imagens. A primeira será a foto principal.
+                </p>
               </div>
-              <label className={`${btn} cursor-pointer border ${p.image_urls.length >= 5 ? "pointer-events-none opacity-50" : ""}`}>
+              <label
+                className={`${btn} cursor-pointer border ${p.image_urls.length >= 5 ? "pointer-events-none opacity-50" : ""}`}
+              >
                 <ImagePlus className="h-4 w-4" /> Adicionar fotos ({p.image_urls.length}/5)
-                <input type="file" accept="image/*" multiple className="hidden" disabled={p.image_urls.length >= 5} onChange={async (e) => {
-                  const files = Array.from(e.target.files ?? []).slice(0, 5 - p.image_urls.length);
-                  if (files.length) {
-                    const images = await Promise.all(files.map(fileToDataUrl));
-                    const image_urls = [...p.image_urls, ...images].slice(0, 5);
-                    setP({ ...p, image_urls, image_url: image_urls[0] ?? null });
-                  }
-                  e.currentTarget.value = "";
-                }} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  disabled={p.image_urls.length >= 5}
+                  onChange={async (e) => {
+                    const files = Array.from(e.target.files ?? []).slice(
+                      0,
+                      5 - p.image_urls.length,
+                    );
+                    if (files.length) {
+                      const images = await Promise.all(files.map(fileToDataUrl));
+                      const image_urls = [...p.image_urls, ...images].slice(0, 5);
+                      setP({ ...p, image_urls, image_url: image_urls[0] ?? null });
+                    }
+                    e.currentTarget.value = "";
+                  }}
+                />
               </label>
             </div>
             {p.image_urls.length > 0 ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                 {p.image_urls.map((url, index) => (
                   <div key={index} className="relative overflow-hidden rounded-lg border bg-muted">
-                    <img src={url} alt={`Foto ${index + 1} de ${p.name}`} className="aspect-square w-full object-contain" />
-                    <span className="absolute left-1 top-1 rounded bg-[#070d22]/85 px-2 py-1 text-xs text-white">{index + 1}{index === 0 ? " · Principal" : ""}</span>
-                    <button type="button" aria-label={`Remover foto ${index + 1}`} onClick={() => {
-                      const image_urls = p.image_urls.filter((_, i) => i !== index);
-                      setP({ ...p, image_urls, image_url: image_urls[0] ?? null });
-                    }} className="absolute right-1 top-1 rounded-full bg-black/75 p-1 text-white"><X className="h-4 w-4" /></button>
+                    <img
+                      src={url}
+                      alt={`Foto ${index + 1} de ${p.name}`}
+                      className="aspect-square w-full object-contain"
+                    />
+                    <span className="absolute left-1 top-1 rounded bg-[#070d22]/85 px-2 py-1 text-xs text-white">
+                      {index + 1}
+                      {index === 0 ? " · Principal" : ""}
+                    </span>
+                    <button
+                      type="button"
+                      aria-label={`Remover foto ${index + 1}`}
+                      onClick={() => {
+                        const image_urls = p.image_urls.filter((_, i) => i !== index);
+                        setP({ ...p, image_urls, image_url: image_urls[0] ?? null });
+                      }}
+                      className="absolute right-1 top-1 rounded-full bg-black/75 p-1 text-white"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
                   </div>
                 ))}
               </div>
-            ) : <p className="rounded-lg border border-dashed p-5 text-center text-sm text-muted-foreground">Nenhuma foto adicionada.</p>}
+            ) : (
+              <p className="rounded-lg border border-dashed p-5 text-center text-sm text-muted-foreground">
+                Nenhuma foto adicionada.
+              </p>
+            )}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Nome"><input className={input} value={p.name} onChange={(e) => setP({ ...p, name: e.target.value })} /></Field>
-            <Field label="Categoria do item"><input className={input} value={p.category} onChange={(e) => setP({ ...p, category: e.target.value })} placeholder="Ex.: Cartões, Copos, Chaveiros" /></Field>
+            <Field label="Nome">
+              <input
+                className={input}
+                value={p.name}
+                onChange={(e) => setP({ ...p, name: e.target.value })}
+              />
+            </Field>
+            <Field label="Categoria do item">
+              <input
+                list="product-categories"
+                className={input}
+                value={p.category}
+                onChange={(e) => setP({ ...p, category: e.target.value })}
+                placeholder="Selecione ou digite uma nova categoria"
+              />
+              <datalist id="product-categories">
+                {catalogCategories(categoryProducts).map((category) => (
+                  <option key={category} value={category} />
+                ))}
+              </datalist>
+            </Field>
             <Field label="Seção do catálogo">
               <div className={`${input} flex min-h-10 items-center`}>Serviço/produto</div>
             </Field>
           </div>
           <Field label="Descrição">
-            <textarea className={`${input} h-24 py-2`} value={p.description} onChange={(e) => setP({ ...p, description: e.target.value })} />
+            <textarea
+              className={`${input} h-24 py-2`}
+              value={p.description}
+              onChange={(e) => setP({ ...p, description: e.target.value })}
+            />
           </Field>
           <div className="grid gap-3 sm:grid-cols-3">
             <label className="flex items-center gap-2 text-sm font-medium">
-              <input type="checkbox" checked={hasPrice} onChange={(e) => setHasPrice(e.target.checked)} /> Mostrar preço
+              <input
+                type="checkbox"
+                checked={hasPrice}
+                onChange={(e) => setHasPrice(e.target.checked)}
+              />{" "}
+              Mostrar preço
             </label>
             {hasPrice ? (
-              <Field label="Preço base (R$)"><input type="number" step="0.01" className={input} value={p.base_price ?? 0} onChange={(e) => setP({ ...p, base_price: Number(e.target.value) })} /></Field>
+              <Field label="Preço base (R$)">
+                <input
+                  type="number"
+                  step="0.01"
+                  className={input}
+                  value={p.base_price ?? 0}
+                  onChange={(e) => setP({ ...p, base_price: Number(e.target.value) })}
+                />
+              </Field>
             ) : (
-              <Field label="Texto do preço"><input className={input} placeholder="Sob consulta" value={p.price_note ?? ""} onChange={(e) => setP({ ...p, price_note: e.target.value })} /></Field>
+              <Field label="Texto do preço">
+                <input
+                  className={input}
+                  placeholder="Sob consulta"
+                  value={p.price_note ?? ""}
+                  onChange={(e) => setP({ ...p, price_note: e.target.value })}
+                />
+              </Field>
             )}
-            <Field label="Ordem"><input type="number" className={input} value={p.sort_order} onChange={(e) => setP({ ...p, sort_order: Number(e.target.value) })} /></Field>
+            <Field label="Ordem">
+              <input
+                type="number"
+                className={input}
+                value={p.sort_order}
+                onChange={(e) => setP({ ...p, sort_order: Number(e.target.value) })}
+              />
+            </Field>
           </div>
           <div className="flex gap-6 text-sm font-medium">
-            <label className="flex items-center gap-2"><input type="checkbox" checked={p.active} onChange={(e) => setP({ ...p, active: e.target.checked })} /> Visível no catálogo</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={p.featured} onChange={(e) => setP({ ...p, featured: e.target.checked })} /> Exibir no carrossel em destaque</label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={p.active}
+                onChange={(e) => setP({ ...p, active: e.target.checked })}
+              />{" "}
+              Visível no catálogo
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={p.featured}
+                onChange={(e) => setP({ ...p, featured: e.target.checked })}
+              />{" "}
+              Exibir no carrossel em destaque
+            </label>
           </div>
 
           <div className="rounded-xl border p-4">
@@ -381,56 +618,161 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
                   const enabled = e.target.checked;
                   setHasOptions(enabled);
                   if (enabled && p.options.length === 0) {
-                    setP({ ...p, options: [{ name: "Quantidade", choices: [{ label: "100 unidades", price: 0 }] }] });
+                    setP({
+                      ...p,
+                      options: [
+                        { name: "Quantidade", choices: [{ label: "100 unidades", price: 0 }] },
+                      ],
+                    });
                   }
                 }}
               />
               <span>
                 <span className="block font-bold">Este produto possui opções?</span>
-                <span className="block text-sm text-muted-foreground">Ative para cadastrar quantidade, acabamento, tamanho ou outras variações. Desative para produtos simples, sem opções.</span>
+                <span className="block text-sm text-muted-foreground">
+                  Ative para cadastrar quantidade, acabamento, tamanho ou outras variações. Desative
+                  para produtos simples, sem opções.
+                </span>
               </span>
             </label>
             {hasOptions && (
               <div className="mt-4 border-t pt-4">
                 <div className="mb-2 flex items-center justify-between gap-2">
                   <h3 className="font-bold">Opções (tamanho, quantidade, acabamento…)</h3>
-                  <button className="text-sm font-semibold text-primary" onClick={() => setP({ ...p, options: [...p.options, { name: "Nova opção", choices: [{ label: "Opção 1", price: 0 }] }] })}>+ Opção</button>
+                  <button
+                    className="text-sm font-semibold text-primary"
+                    onClick={() =>
+                      setP({
+                        ...p,
+                        options: [
+                          ...p.options,
+                          { name: "Nova opção", choices: [{ label: "Opção 1", price: 0 }] },
+                        ],
+                      })
+                    }
+                  >
+                    + Opção
+                  </button>
                 </div>
                 <div className="space-y-3">
                   {p.options.map((o, i) => (
                     <div key={i} className="rounded-xl border bg-background p-3">
                       <div className="mb-2 flex gap-2">
-                        <input className={input} value={o.name} onChange={(e) => setOpt(i, { ...o, name: e.target.value })} />
-                        <button className="px-2 text-destructive" onClick={() => setP({ ...p, options: p.options.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></button>
+                        <input
+                          className={input}
+                          value={o.name}
+                          onChange={(e) => setOpt(i, { ...o, name: e.target.value })}
+                        />
+                        <button
+                          className="px-2 text-destructive"
+                          onClick={() =>
+                            setP({ ...p, options: p.options.filter((_, j) => j !== i) })
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
                       {o.choices.map((choice, k) => (
                         <div key={k} className="mb-2 flex gap-2">
-                          <input className={input} placeholder="Escolha" value={choice.label} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, label: e.target.value } : x)) })} />
+                          <input
+                            className={input}
+                            placeholder="Escolha"
+                            value={choice.label}
+                            onChange={(e) =>
+                              setOpt(i, {
+                                ...o,
+                                choices: o.choices.map((x, m) =>
+                                  m === k ? { ...x, label: e.target.value } : x,
+                                ),
+                              })
+                            }
+                          />
                           {hasPrice && (
                             <div className="flex w-40 shrink-0 flex-col gap-1">
-                              <select aria-label={`Tipo de preço para ${choice.label || "escolha"}`} className={input} value={choice.price === "quote" ? "quote" : "price"} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, price: e.target.value === "quote" ? "quote" : 0 } : x)) })}>
+                              <select
+                                aria-label={`Tipo de preço para ${choice.label || "escolha"}`}
+                                className={input}
+                                value={choice.price === "quote" ? "quote" : "price"}
+                                onChange={(e) =>
+                                  setOpt(i, {
+                                    ...o,
+                                    choices: o.choices.map((x, m) =>
+                                      m === k
+                                        ? { ...x, price: e.target.value === "quote" ? "quote" : 0 }
+                                        : x,
+                                    ),
+                                  })
+                                }
+                              >
                                 <option value="price">Acréscimo (R$)</option>
                                 <option value="quote">A consultar</option>
                               </select>
-                              {choice.price !== "quote" && <input type="number" step="0.01" title="Acréscimo em R$" aria-label="Acréscimo em reais" className={input} value={choice.price} onChange={(e) => setOpt(i, { ...o, choices: o.choices.map((x, m) => (m === k ? { ...x, price: Number(e.target.value) } : x)) })} />}
+                              {choice.price !== "quote" && (
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  title="Acréscimo em R$"
+                                  aria-label="Acréscimo em reais"
+                                  className={input}
+                                  value={choice.price}
+                                  onChange={(e) =>
+                                    setOpt(i, {
+                                      ...o,
+                                      choices: o.choices.map((x, m) =>
+                                        m === k ? { ...x, price: Number(e.target.value) } : x,
+                                      ),
+                                    })
+                                  }
+                                />
+                              )}
                             </div>
                           )}
-                          <button className="px-2 text-muted-foreground" onClick={() => setOpt(i, { ...o, choices: o.choices.filter((_, m) => m !== k) })}><X className="h-4 w-4" /></button>
+                          <button
+                            className="px-2 text-muted-foreground"
+                            onClick={() =>
+                              setOpt(i, { ...o, choices: o.choices.filter((_, m) => m !== k) })
+                            }
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
                         </div>
                       ))}
-                      <button className="text-sm text-primary" onClick={() => setOpt(i, { ...o, choices: [...o.choices, { label: "", price: 0 }] })}>+ Escolha</button>
+                      <button
+                        className="text-sm text-primary"
+                        onClick={() =>
+                          setOpt(i, { ...o, choices: [...o.choices, { label: "", price: 0 }] })
+                        }
+                      >
+                        + Escolha
+                      </button>
                     </div>
                   ))}
                 </div>
-                {hasPrice && <p className="mt-2 text-xs text-muted-foreground">O valor ao lado de cada escolha é somado ao preço base.</p>}
+                {hasPrice && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    O valor ao lado de cada escolha é somado ao preço base.
+                  </p>
+                )}
               </div>
             )}
           </div>
         </div>
 
         <div className="mt-6 flex justify-between gap-2">
-          {p.id ? <button onClick={remove} className={`${btn} text-destructive`}><Trash2 className="h-4 w-4" /> Excluir</button> : <span />}
-          <button disabled={busy} onClick={save} className={`${btn} bg-primary text-primary-foreground`}><Save className="h-4 w-4" /> Salvar</button>
+          {p.id ? (
+            <button onClick={remove} className={`${btn} text-destructive`}>
+              <Trash2 className="h-4 w-4" /> Excluir
+            </button>
+          ) : (
+            <span />
+          )}
+          <button
+            disabled={busy}
+            onClick={save}
+            className={`${btn} bg-primary text-primary-foreground`}
+          >
+            <Save className="h-4 w-4" /> Salvar
+          </button>
         </div>
       </div>
     </div>
