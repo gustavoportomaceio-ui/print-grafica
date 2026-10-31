@@ -121,8 +121,37 @@
     var(--background);
 }
 .store-header {
-  background: color-mix(in oklab, var(--background) 94%, white);
+  background: color-mix(in oklab, var(--background) 96%, white);
   box-shadow: 0 5px 24px -18px var(--foreground);
+}
+.brand-name {
+  font-family: "Bricolage Grotesque", Georgia, serif;
+  color: #ed5b32;
+  letter-spacing: -0.075em;
+  line-height: 1;
+}
+.brand-star {
+  align-self: flex-start;
+  margin: 0 0 0 2px;
+  color: #6722a5;
+  font-size: 19px;
+  transform: translateY(-3px);
+}
+.store-header nav a,
+.store-header .nav-link {
+  color: #27144f;
+  font-weight: 700;
+  text-decoration: none;
+}
+.store-header nav a:hover,
+.store-header .nav-link:hover {
+  color: #6b24a8;
+}
+.store-header .nav-current {
+  border-radius: 999px;
+  background: #6422a4;
+  color: white;
+  padding: 9px 24px;
 }
 .category-menu {
   border-radius: 16px;
@@ -146,9 +175,9 @@
   color: var(--secondary);
 }
 .gift-banner {
-  min-height: 485px;
+  min-height: 425px;
   isolation: isolate;
-  background: var(--accent);
+  background: #d6a4ec;
 }
 .gift-banner::before,
 .gift-banner::after {
@@ -178,7 +207,7 @@
   object-position: center 60%;
 }
 .gift-banner-shade {
-  background: var(--banner-shade);
+  background: linear-gradient(90deg, color-mix(in oklab, #c993e9 88%, transparent) 0%, color-mix(in oklab, #c993e9 72%, transparent) 42%, transparent 67%);
 }
 .banner-wave {
   z-index: 2;
@@ -193,8 +222,27 @@
   justify-content: center;
   border-right: 1px solid var(--border);
 }
+.benefits-band svg {
+  color: #f36b16;
+  width: 38px;
+  height: 38px;
+}
 .benefits-band > div > div:last-child {
   border-right: 0;
+}
+.featured-heading {
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  color: #61239e;
+  letter-spacing: -0.035em;
+}
+.featured-heading span {
+  color: #ff6b13;
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 900;
+  margin: 0 12px;
 }
 .creative-band {
   background:
@@ -216,6 +264,9 @@
 @media (max-width: 767px) {
   .gift-banner {
     min-height: 575px;
+  }
+  .brand-name {
+    font-size: 30px;
   }
   .gift-banner-image {
     height: 300px;
