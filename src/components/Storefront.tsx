@@ -199,6 +199,7 @@ export function Storefront({
                 </nav>
               )}
             </div>
+            <Link to="/#colecoes">Coleções</Link>
             <Link to="/sobre">Sobre nós</Link>
             <Link to="/contato">Contato</Link>
           </nav>
@@ -255,6 +256,9 @@ export function Storefront({
             </Link>
             <strong className="block px-3 pt-3 text-secondary">Produtos</strong>
             {productLinks}
+            <Link to="/#colecoes" onClick={() => setMobileMenuOpen(false)}>
+              Coleções
+            </Link>
             <Link to="/sobre" onClick={() => setMobileMenuOpen(false)}>
               Sobre nós
             </Link>
@@ -368,17 +372,17 @@ export function Storefront({
               </Button>
             </div>
           </main>
-          <section className="creative-band relative overflow-hidden bg-secondary px-5 py-12 text-secondary-foreground">
+          <section id="colecoes" className="creative-band relative overflow-hidden bg-secondary px-5 py-12 text-secondary-foreground">
             <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
               <div>
                 <p className="mb-2 text-sm font-bold text-yellow">
-                  Sua ideia, nosso toque criativo.
+                  Coleções autorais Criattiva
                 </p>
-                <h2 className="text-3xl font-extrabold">Pequenos detalhes. Grandes sorrisos.</h2>
+                <h2 className="text-3xl font-extrabold">Novas estampas. Novas histórias.</h2>
               </div>
               <Button asChild>
-                <Link to="/sobre">
-                  Conheça a Criattiva <ArrowRight />
+                <Link to="/produtos" search={{ categoria: "" }}>
+                  Explore nossas coleções <ArrowRight />
                 </Link>
               </Button>
             </div>
