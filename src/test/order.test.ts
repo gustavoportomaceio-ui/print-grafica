@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildOrderLink, customerSchema, orderTotals, resolveCart, type OrderItem } from "@/lib/order";
 import type { Product } from "@/lib/catalog";
 
-const product: Product = { id: "00000000-0000-4000-8000-000000000001", name: "Cartão de visita", category: "Cartões", description: "", image_url: null, base_price: 100, price_note: "", options: [{ name: "Acabamento", choices: [{ label: "Fosco", price: 0 }, { label: "Brilho", price: 20 }] }], featured: false, active: true, sort_order: 0 };
+const product: Product = { id: "00000000-0000-4000-8000-000000000001", name: "Cartão de visita", category: "Cartões", showcase: "servicos", image_urls: [], description: "", image_url: null, base_price: 100, price_note: "", options: [{ name: "Acabamento", choices: [{ label: "Fosco", price: 0 }, { label: "Brilho", price: 20 }] }], featured: false, active: true, sort_order: 0 };
 const item: OrderItem = { id: "00000000-0000-4000-8000-000000000002", productId: product.id, product, selected: { Acabamento: 1 }, notes: "Arte pronta", quantity: 2 };
 const customer = { name: "Ana Silva", whatsapp: "(11) 99999-9999", address: "Rua das Flores, 10, Centro, São Paulo, 01000-000", payment: "Pix" };
 const settings = { store_name: "Gráfica", whatsapp: "55 (11) 98888-7777", tagline: "" };

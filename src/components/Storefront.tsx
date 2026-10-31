@@ -124,7 +124,7 @@ export function Storefront({
     const target =
       direction > 0
         ? positions.find((x) => x > track.scrollLeft + 4)
-        : positions.findLast((x) => x < track.scrollLeft - 4);
+        : [...positions].reverse().find((x) => x < track.scrollLeft - 4);
     if (target !== undefined)
       track.scrollTo({
         left: target,

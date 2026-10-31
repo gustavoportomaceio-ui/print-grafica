@@ -4,7 +4,7 @@ import { productsQuery, settingsQuery } from "@/lib/catalog";
 import { pageHead } from "@/lib/page-head";
 export const Route = createFileRoute("/produtos")({
   validateSearch: (search: Record<string, unknown>) => ({
-    categoria: typeof search.categoria === "string" ? search.categoria : "",
+    categoria: typeof search["categoria"] === "string" ? search["categoria"] : "",
   }),
   head: () =>
     pageHead(
