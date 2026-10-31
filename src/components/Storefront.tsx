@@ -168,9 +168,9 @@ export function Storefront({
           <Link
             to="/"
             aria-label="Criattiva — início"
-            className="brand-name flex shrink-0 items-center font-display text-4xl font-black tracking-tight text-primary"
+            className="brand-name flex shrink-0 items-center"
           >
-            Criattiva<span className="brand-star" aria-hidden="true">✦</span>
+            <img src="/images/criattiva-logo.svg" alt="Criattiva" width={180} height={69} className="h-auto w-[138px] sm:w-[160px] lg:w-[180px]" />
           </Link>
           <nav
             aria-label="Navegação principal"
@@ -188,6 +188,7 @@ export function Storefront({
                 onClick={() => setProductsMenuOpen((v) => !v)}
               >
                 Produtos <ChevronDown />
+              </Button>
               {productsMenuOpen && (
                 <nav
                   id="product-menu"
