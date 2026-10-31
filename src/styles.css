@@ -184,43 +184,23 @@
   color: var(--secondary);
 }
 .gift-banner {
-  min-height: 425px;
+  min-height: clamp(280px, 25vw, 425px);
   isolation: isolate;
-  background: #d6a4ec;
+  background: #c993e9;
 }
 .gift-banner::before,
 .gift-banner::after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: 48% 52% 62% 38% / 42% 38% 62% 58%;
-}
-.gift-banner::before {
-  width: 230px;
-  height: 170px;
-  left: -95px;
-  top: -55px;
-  background: color-mix(in oklab, var(--secondary) 28%, transparent);
-  transform: rotate(-24deg);
-}
-.gift-banner::after {
-  width: 190px;
-  height: 150px;
-  right: -72px;
-  bottom: 30px;
-  background: color-mix(in oklab, var(--yellow) 48%, transparent);
-  transform: rotate(28deg);
+  content: none;
 }
 .gift-banner-image {
-  object-position: center 60%;
+  object-fit: cover;
+  object-position: center;
 }
 .gift-banner-shade {
-  background: linear-gradient(90deg, color-mix(in oklab, #c993e9 88%, transparent) 0%, color-mix(in oklab, #c993e9 72%, transparent) 42%, transparent 67%);
+  display: none;
 }
 .banner-wave {
-  z-index: 2;
-  fill: var(--background);
+  display: none;
 }
 .benefits-band {
   background: var(--background);
@@ -272,24 +252,13 @@
 }
 @media (max-width: 767px) {
   .gift-banner {
-    min-height: 575px;
+    min-height: 320px;
   }
   .brand-name {
     font-size: 30px;
   }
   .gift-banner-image {
-    height: 300px;
-    top: auto;
-    bottom: 0;
-    object-position: right center;
-  }
-  .gift-banner-shade {
-    background: linear-gradient(
-      180deg,
-      var(--background) 0%,
-      var(--background) 45%,
-      transparent 70%
-    );
+    object-position: center;
   }
   .gift-copy {
     max-width: 390px;
