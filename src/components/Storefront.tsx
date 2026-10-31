@@ -188,6 +188,7 @@ export function Storefront({
                 onClick={() => setProductsMenuOpen((v) => !v)}
               >
                 Produtos <ChevronDown />
+              </Button>
               {productsMenuOpen && (
                 <nav
                   id="product-menu"
