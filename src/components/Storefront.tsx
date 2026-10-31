@@ -23,7 +23,6 @@ import { OrderCart } from "@/components/OrderCart";
 import { brl, productsQuery, settingsQuery, type Product } from "@/lib/catalog";
 import { cartSchema, orderTotals, resolveCart, type CartItem } from "@/lib/order";
 import { catalogCategories, filterCategory } from "@/lib/categories";
-import gifts from "@/assets/criattiva-gifts.jpg";
 
 export function Storefront({
   view = "home",
@@ -272,13 +271,10 @@ export function Storefront({
         <>
           <section className="gift-banner relative isolate overflow-hidden">
             <img
-              src={gifts}
-              alt="Composição ilustrativa de presentes personalizados: canecas, garrafa, bolsa e caixa de presente"
-              width={1536}
-              height={1024}
+              src="/images/banner-criattiva.png.png"
+              alt="Fundo ilustrado da Criattiva em tons de lilás, laranja e amarelo, com a logo da marca"
               className="gift-banner-image absolute inset-0 h-full w-full object-cover"
             />
-            <div className="gift-banner-shade absolute inset-0" />
             <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-6 sm:py-20 lg:px-8">
               <div className="gift-copy max-w-lg">
                 <p className="mb-3 text-sm font-extrabold uppercase tracking-wider text-secondary">Criativos • Autênticos • Com a sua marca</p>
@@ -292,14 +288,6 @@ export function Storefront({
                 </Button>
               </div>
             </div>
-            <svg
-              className="banner-wave absolute bottom-0 left-0 h-12 w-full"
-              viewBox="0 0 1440 70"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path d="M0 30C180 90 350 0 550 30S880 80 1080 30 1300 10 1440 35V70H0Z" />
-            </svg>
           </section>
           <section
             aria-label="Benefícios Criattiva"
