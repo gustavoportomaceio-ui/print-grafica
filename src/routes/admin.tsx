@@ -5,15 +5,16 @@ import type { Session } from "@supabase/supabase-js";
 import { Plus, Trash2, Save, LogOut, ImagePlus, X, Copy, GripVertical } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { productsQuery, settingsQuery, type Product, type ProductOption } from "@/lib/catalog";
+import { catalogCategories } from "@/lib/categories";
 import { AdminOrders } from "@/components/AdminOrders";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Painel do administrador — Catálogo Gráfico" },
+      { title: "Painel do administrador | Criattiva" },
       { name: "description", content: "Gerencie produtos, preços e fotos do catálogo." },
-      { property: "og:title", content: "Painel do administrador" },
-      { property: "og:description", content: "Gerencie o catálogo de serviços gráficos." },
+      { property: "og:title", content: "Painel do administrador | Criattiva" },
+      { property: "og:description", content: "Gerencie produtos personalizados e orçamentos da Criattiva." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -272,6 +273,7 @@ async function fileToDataUrl(file: File): Promise<string> {
 }
 
 function ProductEditor({ product, onClose, onSaved }: { product: Product; onClose: () => void; onSaved: () => void }) {
+  const { data: categoryProducts = [] } = useQuery(productsQuery);
   const [p, setP] = useState<Product>(structuredClone(product));
   const [hasPrice, setHasPrice] = useState(product.base_price !== null);
   const [hasOptions, setHasOptions] = useState(product.options.length > 0);
@@ -347,7 +349,7 @@ function ProductEditor({ product, onClose, onSaved }: { product: Product; onClos
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Nome"><input className={input} value={p.name} onChange={(e) => setP({ ...p, name: e.target.value })} /></Field>
-            <Field label="Categoria do item"><input className={input} value={p.category} onChange={(e) => setP({ ...p, category: e.target.value })} placeholder="Ex.: Cartões, Copos, Chaveiros" /></Field>
+            <Field label="Categoria do item"><input list="product-categories" className={input} value={p.category} onChange={(e) => setP({ ...p, category: e.target.value })} placeholder="Selecione ou digite uma nova categoria" /><datalist id="product-categories">{catalogCategories(categoryProducts).map((category) => <option key={category} value={category} />)}</datalist></Field>
             <Field label="Seção do catálogo">
               <div className={`${input} flex min-h-10 items-center`}>Serviço/produto</div>
             </Field>
